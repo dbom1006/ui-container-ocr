@@ -1,0 +1,42 @@
+@import '~antd/es/style/themes/default.less';
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  box-shadow: @box-shadow-base;
+
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    height: 64px;
+    transition: all 0.3s;
+
+    img {
+      display: inline-block;
+      height: 40px;
+      vertical-align: middle;
+    }
+
+    span {
+      margin-left: 12px;
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 64px;
+    }
+  }
+
+  button {
+    min-width: 100px;
+    margin-left: 12px;
+  }
+}
+
+.guestLayout {
+  margin: 32px;
+
+  .ant-layout {
+    transition: all 0.2s;
+  }
+}

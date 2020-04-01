@@ -1,0 +1,19 @@
+@import '~antd/es/style/themes/default.less';
+
+.standardTable {
+  :global {
+    .ant-table-body {
+      overflow-x: auto !important;
+      .ant-table-layout-fixed table {
+        table-layout: auto;
+      }
+    }
+    .ant-table-pagination {
+      margin-top: 24px;
+    }
+  }
+
+  .tableAlert {
+    margin-bottom: 16px;
+  }
+}

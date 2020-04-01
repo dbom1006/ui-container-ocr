@@ -1,0 +1,19 @@
+@import '~antd/es/style/themes/default.less';
+
+@portalLayout-prefix-cls: ~'@{ant-prefix}-pro-portalLayout-content';
+
+:global {
+  .ant-layout {
+    background-color: #fff;
+  }
+  .@{portalLayout-prefix-cls} {
+    margin: 24px;
+    padding-top: @layout-header-height;
+  }
+
+  .portalLayout {
+    .ant-layout {
+      transition: all 0.2s;
+    }
+  }
+}

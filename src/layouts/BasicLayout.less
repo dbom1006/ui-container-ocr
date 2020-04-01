@@ -1,0 +1,36 @@
+@import '~antd/es/style/themes/default.less';
+
+@basicLayout-prefix-cls: ~'@{ant-prefix}-pro-basicLayout-content';
+
+:global {
+  .@{basicLayout-prefix-cls} {
+    margin: 24px;
+    padding-top: @layout-header-height;
+  }
+
+  .basicLayout {
+    .ant-layout {
+      transition: all 0.2s;
+    }
+  }
+
+  .ant-page-header-heading-title {
+    font-size: 20px;
+  }
+
+  .ant-breadcrumb + .ant-page-header-heading {
+    margin-top: 8px;
+  }
+
+  .ant-pro-page-header-wrap-page-header-warp {
+    border-bottom: 1px solid @border-color-split;
+  }
+
+  .ant-table-thead > tr > th {
+    background: unset;
+  }
+
+  .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
+    background: unset;
+  }
+}

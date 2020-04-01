@@ -1,0 +1,31 @@
+@import '~antd/es/style/themes/default.less';
+
+.containers {
+  > :global(.ant-row) {
+    margin-bottom: 24px;
+  }
+
+  .info {
+    flex-flow: nowrap;
+  }
+
+  .actions {
+    button {
+      border: none;
+    }
+  }
+}
+
+.header {
+  margin-bottom: 8px;
+}
+
+.infoLimit {
+  max-width: 200px;
+  white-space: nowrap;
+
+  > div {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
