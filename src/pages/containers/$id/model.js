@@ -1,7 +1,7 @@
-import { getEventDetail } from '@/services/event';
+import { getContainerDetail } from '@/services/container';
 
 const Model = {
-  namespace: 'upcomingEvent',
+  namespace: 'containerDetail',
   state: {
     current: {},
     staffings: {
@@ -14,7 +14,7 @@ const Model = {
   },
   effects: {
     *fetchCurrent({ payload }, { call, put }) {
-      const response = yield call(getEventDetail, payload);
+      const response = yield call(getContainerDetail, payload);
       yield put({
         type: 'saveCurrent',
         payload: response,

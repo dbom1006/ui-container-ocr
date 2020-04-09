@@ -1,78 +1,61 @@
-import { Avatar, Card, Col, Divider, Icon, Input, Row, Tag } from 'antd';
+import { Col, Row, PageHeader, Icon } from 'antd';
 import React, { Component } from 'react';
-import { GridContent, PageHeaderWrapper } from '@ant-design/pro-layout';
-import Link from 'umi/link';
+import { GridContent } from '@ant-design/pro-layout';
 import { connect } from 'dva';
-import router from 'umi/router';
-import moment from 'moment';
 import styles from './style.less';
+import moment from 'moment';
 
-@connect(({ upcomingEvent, loading }) => ({
-  event: upcomingEvent.current,
-  loading: loading.effects['upcomingEvent/fetchCurrent'],
+@connect(({ containerDetail, loading }) => ({
+  container: containerDetail.current,
+  loading: loading.effects['containerDetail/fetchCurrent'],
 }))
-class UpcomingDetail extends Component {
-  tabList = [
-    {
-      key: 'detail',
-      tab: 'Info',
-    },
-    {
-      key: 'staffing',
-      tab: 'Staffing',
-    },
-  ];
+class DetailContainer extends Component {
 
   componentDidMount = () => {
     const { dispatch, match } = this.props;
     dispatch({
-      type: 'upcomingEvent/fetchCurrent',
+      type: 'containerDetail/fetchCurrent',
       payload: match.params.id,
     });
   };
 
-  handleTabChange = key => {
-    const { match } = this.props;
-    const url = (match.url === '/' ? '' : match.url).replace('/detail', '');
-
-    switch (key) {
-      case 'detail':
-      case 'staffing':
-      case 'payment':
-        router.push(`${url}/${key}`);
-        break;
-      default:
-        break;
-    }
-  };
-
-  getTabKey = () => {
-    const { match, location } = this.props;
-    const url = (match.path === '/' ? '' : match.path).replace(':id', match.params.id);
-    const tabKey = location.pathname.replace(`${url}/`, '');
-    if (tabKey && tabKey !== '/') {
-      return tabKey;
-    }
-    return 'detail';
-  };
-
   render() {
-    const { children, loading } = this.props;
+    const { container } = this.props;
     return (
-      <PageHeaderWrapper title="Staffing Detail">
-        <Card
-          className={styles.tabsCard}
-          bordered={false}
-          tabList={this.tabList}
-          onTabChange={this.handleTabChange}
-          activeTabKey={this.getTabKey()}
-          loading={loading}
-        >
-          {children}
-        </Card>
-      </PageHeaderWrapper>
+      <PageHeader 
+        className="site-page-header"
+        onBack={() => window.history.back()}
+        title="Container detail">
+        <GridContent>
+          <Row gutter={24}>
+            <Col md={8} className={styles.content}>
+              <div>
+                <span>Code Number:</span> {container.codeNumber}
+              </div>
+              <div>
+                <span>Confirmed: </span> {container.isConfirmed && <Icon type="check" />}
+              </div>
+              <div>
+                <span>Owner:</span> {container.owner}
+              </div>
+              <div>
+                <span>Seri:</span> {container.serial}
+              </div>
+              <div>
+                <span>Url:</span>{' '}                
+              </div>
+              <div>
+                <span>Type:</span> {container.type}
+              </div>
+              <div>
+                <span>Time:</span> {moment(container.updatedAt).format('HH:mm DD/MM/YYYY')}
+              </div>              
+            </Col>         
+          </Row>
+        </GridContent>
+      </PageHeader>
     );
   }
 }
 
-export default UpcomingDetail;
+export default DetailContainer;

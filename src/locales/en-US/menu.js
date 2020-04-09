@@ -86,4 +86,6 @@ export default {
   'menu.tender.roster': 'Your Roster',
   'menu.tender.block': 'Blocked',
   'menu.tender.past': 'Past Tenders',
+  'menu.sources.detail.containers': 'Containers detail',
+  'menu.containers.detail': 'Container detail'
 };

@@ -1,4 +1,5 @@
 import { getSourceDetail } from '@/services/source';
+import { getDataContainers } from '@/services/container';
 
 const Model = {
   namespace: 'sourceDetail',
@@ -11,12 +12,26 @@ const Model = {
       sort: {},
       search: '',
     },
+    dataContainer: {
+      list: [],
+      pagination: {},
+      filter: {},
+      sort: { field: 'updatedAt', order: 'desc' },
+      search: '',
+    },
   },
   effects: {
     *fetchCurrent({ payload }, { call, put }) {
       const response = yield call(getSourceDetail, payload);
       yield put({
         type: 'saveCurrent',
+        payload: response,
+      });
+    },
+    *fetchDataContainer({ payload }, { call, put }) {
+      const response = yield call(getDataContainers, payload);
+      yield put({
+        type: 'saveDataContainer',
         payload: response,
       });
     },
@@ -27,6 +42,9 @@ const Model = {
     },
     saveStaffings(state, action) {
       return { ...state, staffings: action.payload || {} };
+    },
+    saveDataContainer(state, action) {
+      return { ...state, dataContainer: action.payload };
     },
   },
 };

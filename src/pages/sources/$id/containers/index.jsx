@@ -1,25 +1,28 @@
-import { Avatar, Card, Col, Icon, Input, Row, Button, Table, Tooltip, message } from 'antd';
+import { Avatar, Card, Col, Icon, Input, Row, Button, Table, Tooltip, message, Modal } from 'antd';
 import React, { PureComponent } from 'react';
-import { GridContent } from '@ant-design/pro-layout';
+import { GridContent, PageHeaderWrapper } from '@ant-design/pro-layout';
 import Link from 'umi/link';
 import { connect } from 'dva';
 import upperFirst from 'lodash/upperFirst';
 import styles from './style.less';
 import StandardTable from '@/components/StandardTable';
+import moment from 'moment';
 
-const isHired = state => ['CONFIRMED', 'WORKING', 'SEND_FUND', 'SEND_FUND_FAILED'].includes(state);
-const isCheckin = state => ['WORKING', 'SEND_FUND', 'SEND_FUND_FAILED'].includes(state);
+// const isHired = state => ['CONFIRMED', 'WORKING', 'SEND_FUND', 'SEND_FUND_FAILED'].includes(state);
+// const isCheckin = state => ['WORKING', 'SEND_FUND', 'SEND_FUND_FAILED'].includes(state);
 
-@connect(({ sourceDetail, settings, user, loading }) => ({
-  containers: sourceDetail.containers,
-  event: sourceDetail.current,
-  customer: user.currentUser,
-  positions: settings.positions,
-  loading: loading.effects['sourceDetail/fetchContainers'] || loading.effects['sourceDetail/addToRoster'],
+@connect(({ sourceDetail, loading }) => ({
+  source: sourceDetail.current,
+  data: sourceDetail. dataContainer,
+  loading: loading.effects['sourceDetail/fetchDataContainer'],
 }))
 class SourceContainers extends PureComponent {
   state = {
     selectedRows: [],
+    previewVisible: false,
+    previewImage: null,
+    previewVideo: false,
+    previewNumber: '',
   };
 
   componentDidMount() {
@@ -32,233 +35,159 @@ class SourceContainers extends PureComponent {
 
   handleTableChange = (pagination, filter, sort) => {
     const { dispatch } = this.props;
-    const { containers } = this.props;
-    this.fetchData(pagination, filter, sort, containers.search);
+    const { data } = this.props;
+    this.fetchData(pagination, filter, sort, data.search);
   };
 
   handleSearch = search => {
-    const { containers } = this.props;
-    const { pagination, filter, sort } = containers;
+    const { data } = this.props;
+    const { pagination, filter, sort } = data;
     this.fetchData(pagination, filter, sort, search);
   };
 
   handleSearchChange = e => {
-    const { pagination, filter, sort, search } = this.props.containers;
+    const { pagination, filter, sort, search } = this.props.data;
     if (!e.target.value && search) {
       this.fetchData(pagination, filter, sort, '');
     }
   };
 
-  fetchData = (pagination = {}, filter = {}, sort = {}, search = '') => {
-    const { dispatch, event } = this.props;
+  fetchData = (pagination, filter, { field = 'updatedAt', order = 'desc' } = {}, search) => {
+    const { dispatch, source } = this.props;
     dispatch({
-      type: 'sourceDetail/fetchContainers',
+      type: 'sourceDetail/fetchDataContainer',
       payload: {
         pagination,
-        filter: {
-          jobEvent: event.id,
-          company: event.host._id,
-          state: ['CONFIRMED', 'WORKING', 'SEND_FUND', 'SEND_FUND_FAILED'],
-          ...filter,
-        },
-        sort,
+        filter: { ...filter, source: source._id},
+        sort: { field, order },
         search,
       },
     });
   };
+  handleCancel = () => this.setState({ previewVisible: false });
 
-  addToRoster = (user = {}, state = 'ROSTER') => {
-    const { customer, dispatch } = this.props;
-    const company = customer.company || null;
-    dispatch({
-      type: 'sourceDetail/addToRoster',
-      payload: { user, company, state },
-      callback: () => {
-        const { pagination, filter, sort, search } = this.props.containers;
-        this.fetchData(pagination, filter, sort, search);
-        message.success('Success');
-      },
+  handlePreview = async (url, codeNumber, isVideo) => {
+    this.setState({
+      previewImage: url,
+      previewVideo: isVideo,
+      previewNumber: codeNumber,
+      previewVisible: true,
     });
   };
 
   columns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      render: (name, { user }) => (
-        <Row type="flex" gutter={12} align="middle" className={styles.info}>
-          <Col>
-            <Avatar shape="circle" src={user && user.avatar}>
-              {(name && name[0]) || (user.name && user.name[0])}
-            </Avatar>
-          </Col>
-          <Col className={styles.infoLimit}>
-            <div title={name || (user && user.name)}>
-              <b>{name || (user && user.name)}</b>
-            </div>
-            <div title={user && user.email}>{user && user.email}</div>
-          </Col>
-        </Row>
-      ),
-    },
-    {
-      title: 'Position',
-      dataIndex: 'job.position',
-      render: id => {
-        if (!id) {
-          const { containers } = this.props;
-          const { filter } = containers;
-          if (filter['job.position']) id = filter['job.position'];
-        }
-        const { positions } = this.props;
-        const position = positions.find(x => x.id == id);
-        return position ? position.name : '';
-      },
-      filters: this.props.positions.map(x => ({ text: x.name, value: x.id })),
-      filterMultiple: false,
-    },
-    {
-      title: 'On Roster',
-      dataIndex: 'status',
-      render: status => (
-          <Button
-            type="primary"
-            size="small"
-            disabled={status != 'ROSTER'}
-            icon="check"
-            shape="circle"
-          />
-        ),
-    },
-    {
-      title: 'Blocked',
+      title: 'Container Image',
       dataIndex: '',
-      render: container => (
-          <Button
-            type="primary"
-            size="small"
-            disabled={container.status != 'BLOCK'}
-            icon="check"
-            shape="circle"
+      render: ({ image, source, codeNumber }) => {
+        image = image || source;
+        if (source.type == 'Video')
+          return (
+            <Avatar
+              src={image.url}
+              shape="square"
+              size={80}
+              icon="video-camera"
+              onClick={() => this.handlePreview(image.url, codeNumber, 'Video')}
+            />
+          );
+        return (
+          <img
+            className={styles.image}
+            height={80}
+            src={image.url}
+            onClick={() => this.handlePreview(image.url, codeNumber)}
           />
-        ),
+        );
+      },
+    },
+    {
+      title: 'Code Number',
+      dataIndex: 'codeNumber',
+    },
+    {
+      title: 'Confirmed',
+      dataIndex: 'isConfirmed',
+      render: isConfirmed => isConfirmed && <Icon type="check" />,
+    },
+    {
+      title: 'Owner',
+      dataIndex: 'owner',
+    },
+    {
+      title: 'Seri',
+      dataIndex: 'serial',
+    },
+    {
+      title: 'Type',
+      dataIndex: 'type',
+    },
+    {
+      title: 'Time',
+      dataIndex: 'updatedAt',
+      render: date => moment(date).format('HH:mm DD/MM/YYYY'),
+      sorter: true,
     },
     {
       title: 'Actions',
       dataIndex: '',
-      render: container => {
-        if (container && container.status) {
-          switch (container.status) {
-            case 'ROSTER':
-              return (
-                <div className={styles.actions}>
-                  <Tooltip placement="topLeft" title="Block" arrowPointAtCenter>
-                    <Button shape="circle" onClick={() => this.addToRoster(container.user, 'BLOCK')}>
-                      <Icon type="stop" />
-                    </Button>
-                  </Tooltip>
-                </div>
-              );
-            case 'BLOCK':
-              return (
-                <div className={styles.actions}>
-                  <Tooltip placement="topLeft" title="Add to Roster" arrowPointAtCenter>
-                    <Button shape="circle" onClick={() => this.addToRoster(container.user)}>
-                      <Icon type="user-add" />
-                    </Button>
-                  </Tooltip>
-                </div>
-              );
-            default:
-              return (
-                <div className={styles.actions}>
-                  <Tooltip placement="topLeft" title="Add to Roster" arrowPointAtCenter>
-                    <Button shape="circle" onClick={() => this.addToRoster(container.user)}>
-                      <Icon type="user-add" />
-                    </Button>
-                  </Tooltip>
-                  <Tooltip placement="topLeft" title="Block" arrowPointAtCenter>
-                    <Button shape="circle" onClick={() => this.addToRoster(container.user, 'BLOCK')}>
-                      <Icon type="stop" />
-                    </Button>
-                  </Tooltip>
-                </div>
-              );
-          }
-        }
-      },
+      render: container => (
+        <span className={styles.actions}>
+          <Link to={`/containers/${container.id}`}>
+            <Tooltip title="View detail">
+              <Button type="link" shape="circle" icon="eye" />
+            </Tooltip>
+          </Link>
+          <Link to={`/sources/${container.source.id}/detail`}>
+            <Tooltip title="View source">
+              <Button type="link" shape="circle" icon="link" />
+            </Tooltip>
+          </Link>
+        </span>
+      ),
     },
   ];
-
-  positionColumn = [
-    {
-      title: 'Name',
-      dataIndex: 'name',
-    },
-    {
-      title: 'Required',
-      dataIndex: 'required',
-    },
-    {
-      title: 'Applied',
-      dataIndex: 'applied',
-    },
-    {
-      title: 'Hired',
-      dataIndex: 'hired',
-    },
-    {
-      title: 'Checkin',
-      dataIndex: 'checkin',
-    },
-  ];
-
-  getPositions = () => {
-    const { event } = this.props;
-    const { jobs } = event;
-    return jobs.map(x => ({
-      id: x.position.id,
-      name: x.position.name,
-      required: x.quantity,
-      applied: x.containers.length,
-      hired: x.containers.filter(y => isHired(y.state)).length,
-      checkin: x.containers.filter(y => isCheckin(y.state)).length,
-    }));
-  };
 
   render() {
-    const { containers, loading } = this.props;
-    const { selectedRows } = this.state;
+    const { data, loading } = this.props;
+    const { selectedRows, previewVisible, previewImage, previewNumber, previewVideo } = this.state;
     return (
       <GridContent>
-        <div className={styles.containers}>
-          <Row type="flex" justify="end" className={styles.header}>
-            <Col md={6}>
-              <Input.Search
-                placeholder="Enter to search container"
-                enterButton
-                allowClear
-                onChange={this.handleSearchChange}
-                onSearch={this.handleSearch}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <StandardTable
-              // selectedRows={selectedRows}
-              // onSelectRow={this.handleSelectRows}
-              rowKey="id"
-              loading={loading}
-              data={containers}
-              columns={this.columns}
-              onChange={this.handleTableChange}
+        <Row type="flex" justify="space-between" className={styles.header}>
+          <Col md={6}>
+            <Button disabled={!selectedRows.length} type="primary">
+              Export CSV
+            </Button>
+          </Col>
+          <Col md={6}>
+            <Input.Search
+              placeholder="Enter to search source"
+              enterButton
+              allowClear
+              onChange={this.handleSearchChange}
+              onSearch={this.handleSearch}
             />
-          </Row>
-          <Row style={{ textAlign: 'center' }}>
-            For questions about the hours of a tender please email{' '}
-            <a href="mailto:concierge@hiretend.com">concierge@hiretend.com</a>
-          </Row>
-        </div>
+          </Col>
+        </Row>
+        <StandardTable
+          rowKey="id"
+          selectedRows={selectedRows}
+          onSelectRow={this.handleSelectRows}
+          loading={loading}
+          data={data}
+          columns={this.columns}
+          onChange={this.handleTableChange}
+        />
+        <Modal width={680} visible={previewVisible} destroyOnClose footer={null} onCancel={this.handleCancel}>
+          <h2>{previewNumber}</h2>
+          {previewVideo ? (
+            <video style={{ width: '100%' }} controls>
+              <source src={previewImage}></source>
+            </video>
+          ) : (
+            <img alt="preview" style={{ width: '100%' }} src={previewImage} />
+          )}
+        </Modal>
       </GridContent>
     );
   }

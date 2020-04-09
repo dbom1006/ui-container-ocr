@@ -1,9 +1,28 @@
 @import '~antd/es/style/themes/default.less';
 
-.tabsCard {
-  :global {
-    .ant-card-head {
-      border-bottom: 0;
+.content {
+  font-size: 14px;
+  & > div {
+    padding-bottom: 10px;
+    & > span {
+      display: inline-block;
+      padding-right: 5px;
+      color: rgba(0, 0, 0, 0.85);
+      font-weight: 500;
+      white-space: nowrap;
     }
   }
+
+  .actions {
+    button {
+      min-width: 92px;
+      margin-right: 12px;
+    }
+  }
+}
+
+.alert {
+  color: #8c8c8c;
+  font-style: italic;
+  text-align: justify;
 }

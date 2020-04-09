@@ -129,7 +129,7 @@ class ListContainers extends Component {
       dataIndex: '',
       render: container => (
         <span className={styles.actions}>
-          <Link to={`/container/${container.id}/detail`}>
+          <Link to={`/containers/${container.id}`}>
             <Tooltip title="View detail">
               <Button type="link" shape="circle" icon="eye" />
             </Tooltip>
