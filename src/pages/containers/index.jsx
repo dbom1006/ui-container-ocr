@@ -17,6 +17,7 @@ class ListContainers extends Component {
     selectedRows: [],
     previewVisible: false,
     previewImage: null,
+    previewVideo: false,
     previewNumber: '',
   };
 
@@ -61,9 +62,10 @@ class ListContainers extends Component {
   };
   handleCancel = () => this.setState({ previewVisible: false });
 
-  handlePreview = async (url, codeNumber) => {
+  handlePreview = async (url, codeNumber, isVideo) => {
     this.setState({
       previewImage: url,
+      previewVideo: isVideo,
       previewNumber: codeNumber,
       previewVisible: true,
     });
@@ -75,6 +77,16 @@ class ListContainers extends Component {
       dataIndex: '',
       render: ({ image, source, codeNumber }) => {
         image = image || source;
+        if (source.type == 'Video')
+          return (
+            <Avatar
+              src={image.url}
+              shape="square"
+              size={80}
+              icon="video-camera"
+              onClick={() => this.handlePreview(image.url, codeNumber, 'Video')}
+            />
+          );
         return (
           <img
             className={styles.image}
@@ -134,7 +146,7 @@ class ListContainers extends Component {
 
   render() {
     const { data, loading } = this.props;
-    const { selectedRows, previewVisible, previewImage, previewNumber } = this.state;
+    const { selectedRows, previewVisible, previewImage, previewNumber, previewVideo } = this.state;
     return (
       <PageHeaderWrapper title="Container">
         <Row type="flex" justify="space-between" className={styles.header}>
@@ -162,9 +174,15 @@ class ListContainers extends Component {
           columns={this.columns}
           onChange={this.handleTableChange}
         />
-        <Modal width={680} visible={previewVisible} footer={null} onCancel={this.handleCancel}>
+        <Modal width={680} visible={previewVisible} destroyOnClose footer={null} onCancel={this.handleCancel}>
           <h2>{previewNumber}</h2>
-          <img alt="preview" style={{ width: '100%' }} src={previewImage} />
+          {previewVideo ? (
+            <video style={{ width: '100%' }} controls>
+              <source src={previewImage}></source>
+            </video>
+          ) : (
+            <img alt="preview" style={{ width: '100%' }} src={previewImage} />
+          )}
         </Modal>
       </PageHeaderWrapper>
     );
