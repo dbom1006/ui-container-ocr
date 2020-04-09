@@ -77,7 +77,7 @@ class ListContainers extends Component {
       dataIndex: '',
       render: ({ image, source, codeNumber }) => {
         image = image || source;
-        if (source.type == 'Video')
+        if (source && source.type == 'Video')
           return (
             <Avatar
               src={image.url}
@@ -91,7 +91,7 @@ class ListContainers extends Component {
           <img
             className={styles.image}
             height={80}
-            src={image.url}
+            src={image && image.url}
             onClick={() => this.handlePreview(image.url, codeNumber)}
           />
         );

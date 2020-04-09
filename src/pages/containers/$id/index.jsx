@@ -11,6 +11,13 @@ import moment from 'moment';
 }))
 class DetailContainer extends Component {
 
+  state = {    
+    previewVisible: false,
+    previewImage: null,
+    previewVideo: false,
+    previewNumber: '',
+  };
+
   componentDidMount = () => {
     const { dispatch, match } = this.props;
     dispatch({
@@ -18,6 +25,38 @@ class DetailContainer extends Component {
       payload: match.params.id,
     });
   };
+
+  handlePreview = async (url, codeNumber, isVideo) => {
+    this.setState({
+      previewImage: url,
+      previewVideo: isVideo,
+      previewNumber: codeNumber,
+      previewVisible: true,
+    });
+  };
+
+  renderImage = container => {
+    let { image, source, codeNumber } = container;
+    image = image || source;
+    if (source && source.type == 'Video')
+      return (
+        <Avatar
+          src={image.url}
+          shape="square"
+          size={80}
+          icon="video-camera"
+          onClick={() => this.handlePreview(image.url, codeNumber, 'Video')}
+        />
+      );
+    return (
+      <img
+        className={styles.image}
+        height={80}
+        src={image && image.url}
+        onClick={() => this.handlePreview(image.url, codeNumber)}
+      />
+    );
+  }
 
   render() {
     const { container } = this.props;
@@ -42,7 +81,10 @@ class DetailContainer extends Component {
                 <span>Seri:</span> {container.serial}
               </div>
               <div>
-                <span>Url:</span>{' '}                
+                <span>Reliability:</span>{container.reliability}                
+              </div>
+              <div>
+                <span>Processing Time:</span>{container.processingTime}                
               </div>
               <div>
                 <span>Type:</span> {container.type}
@@ -51,6 +93,9 @@ class DetailContainer extends Component {
                 <span>Time:</span> {moment(container.updatedAt).format('HH:mm DD/MM/YYYY')}
               </div>              
             </Col>         
+            <Col md={16} className={styles.image}>
+              {this.renderImage(container)}
+            </Col>
           </Row>
         </GridContent>
       </PageHeader>
