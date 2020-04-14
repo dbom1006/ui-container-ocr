@@ -51,7 +51,7 @@ class DetailContainer extends Component {
     return (
       <img
         className={styles.image}
-        height={80}
+        //height={80}
         src={image && image.url}
         onClick={() => this.handlePreview(image.url, codeNumber)}
       />

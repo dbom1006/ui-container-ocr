@@ -17,7 +17,9 @@ import moment from 'moment';
   loading: loading.effects['sourceDetail/fetchDataContainer'],
 }))
 class SourceContainers extends PureComponent {
+  intervalId = null;
   state = {
+    loaded: false,
     selectedRows: [],
     previewVisible: false,
     previewImage: null,
@@ -25,10 +27,14 @@ class SourceContainers extends PureComponent {
     previewNumber: '',
   };
 
-  async componentDidMount() {
-    setInterval(()=>{
-      this.fetchData();
-    },5000)
+  componentDidMount() {
+    this.intervalId = setInterval(()=>{
+      this.fetchData();      
+    },3000)
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalId)
   }
 
   handleSelectRows = selectedRows => {
@@ -54,9 +60,9 @@ class SourceContainers extends PureComponent {
     }
   };
 
-  fetchData = (pagination, filter, { field = 'updatedAt', order = 'desc' } = {}, search) => {
+  fetchData = async (pagination, filter, { field = 'updatedAt', order = 'desc' } = {}, search) => {
     const { dispatch, source } = this.props;
-    dispatch({
+    await dispatch({
       type: 'sourceDetail/fetchDataContainer',
       payload: {
         pagination,
@@ -65,6 +71,7 @@ class SourceContainers extends PureComponent {
         search,
       },
     });
+    this.setState({ loaded: true })
   };
   handleCancel = () => this.setState({ previewVisible: false });
 
@@ -151,8 +158,8 @@ class SourceContainers extends PureComponent {
   ];
 
   render() {
-    const { data, source } = this.props;
-    const { selectedRows, previewVisible, previewImage, previewNumber, previewVideo } = this.state;
+    const { data, loading, source } = this.props;
+    const { loaded, selectedRows, previewVisible, previewImage, previewNumber, previewVideo } = this.state;
     return (
       <GridContent>
         <Row type="flex" justify="space-between" className={styles.header}>
@@ -189,7 +196,7 @@ class SourceContainers extends PureComponent {
               rowKey="id"
               selectedRows={selectedRows}
               onSelectRow={this.handleSelectRows}
-              //loading={loading}
+              loading={!loaded}
               data={data}
               columns={this.columns}
               onChange={this.handleTableChange}
