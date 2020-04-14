@@ -27,12 +27,21 @@ const FormItem = Form.Item;
   submitting: loading.effects['sources/add'],
 }))
 class PopupAddSource extends Component {
+
+  state = {
+    typeOfSource: "Image"
+  }
+
   openNotificationWithIcon = type => {
     notification[type]({
       message: 'Send Notification Success',
       description: 'Send notification success.',
     });
   };
+
+  onChangeType = type => {
+    this.setState({ typeOfSource: type });
+  }
 
   handleSubmit = e => {
     e.preventDefault();
@@ -74,6 +83,7 @@ class PopupAddSource extends Component {
   };
 
   render() {
+    const { typeOfSource } = this.state;
     const {
       type = 'Add',
       dataPopup,
@@ -118,9 +128,10 @@ class PopupAddSource extends Component {
                   {getFieldDecorator('type', {
                     initialValue: typeSource || 'Image',
                   })(
-                    <Select placeholder="Select type of source">
+                    <Select placeholder="Select type of source" onChange={this.onChangeType}>
                       <Select.Option value="Image">Image</Select.Option>
                       <Select.Option value="Video">Video</Select.Option>
+                      <Select.Option value="Camera">Camera</Select.Option>
                     </Select>,
                   )}
                 </FormItem>
@@ -133,52 +144,58 @@ class PopupAddSource extends Component {
                     valuePropName: 'checked',
                   })(<Switch />)}
                 </FormItem>
-              </Col>
-              <Col md={10}>
-                <Form.Item
-                  label="Upload Source"
-                  extra="Select Image or Video (Max: 100MB)"
-                  className={styles.upload}
-                >
-                  {getFieldDecorator('files', {
-                    valuePropName: 'fileList',
-                    getValueFromEvent: this.normFile,
-                    initialValue: [file].filter(Boolean),
-                  })(
-                    <Upload
-                      name="file"
-                      listType="picture-card"
-                      accept="video/*,image/*"
-                      showUploadList={{ showPreviewIcon: false, showRemoveIcon: true }}
-                    >
-                      {files.length == 0 && (
-                        <div>
-                          <Icon type="plus" />
-                          <div className="ant-upload-text">Upload</div>
-                        </div>
-                      )}
-                    </Upload>,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col md={14}>
-                <FormItem label="URL Source">
-                  {getFieldDecorator('url', {
-                    rules: [
-                      {
-                        required: files.length == 0,
-                        message: 'Please input url source!',
-                      },
-                      {
-                        type: 'url',
-                        message: 'Please input valid url!',
-                      },
-                    ],
-                    initialValue: url,
-                  })(<Input placeholder="Enter url source" />)}
-                </FormItem>
-              </Col>
-              <Col md={14}>
+              </Col>              
+              {
+                typeOfSource !== "Camera" &&
+                <Col md={24}>
+                  <Form.Item
+                    label="Upload Source"
+                    extra="Select Image or Video (Max: 100MB)"
+                    className={styles.upload}
+                  >
+                    {getFieldDecorator('files', {
+                      valuePropName: 'fileList',
+                      getValueFromEvent: this.normFile,
+                      initialValue: [file].filter(Boolean),
+                    })(
+                      <Upload
+                        name="file"
+                        listType="picture-card"
+                        accept="video/*,image/*"
+                        showUploadList={{ showPreviewIcon: false, showRemoveIcon: true }}
+                      >
+                        {files.length == 0 && (
+                          <div>
+                            <Icon type="plus" />
+                            <div className="ant-upload-text">Upload</div>
+                          </div>
+                        )}
+                      </Upload>,
+                    )}
+                  </Form.Item>
+                </Col>
+              }
+              {
+                typeOfSource === "Camera" &&
+                <Col md={24}>
+                  <FormItem label="URL Source">
+                    {getFieldDecorator('url', {
+                      // rules: [
+                      //   {
+                      //     required: files.length == 0,
+                      //     message: 'Please input url source!',
+                      //   },
+                      //   {
+                      //     type: 'url',
+                      //     message: 'Please input valid url!',
+                      //   },
+                      // ],
+                      initialValue: url,
+                    })(<Input placeholder="Enter url source" />)}
+                  </FormItem>
+                </Col>
+              }              
+              <Col md={24}>
                 <FormItem label="Tags">
                   {getFieldDecorator('tag', {
                     initialValue: tag,
