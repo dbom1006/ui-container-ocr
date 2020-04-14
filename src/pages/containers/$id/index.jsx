@@ -70,8 +70,9 @@ class DetailContainer extends Component {
           <Row gutter={24}>
             <Col md={8} className={styles.content}>
               <div>
-                <span>Code Number:</span> {container.codeNumber}
+                <h2>{container.codeNumber}</h2>
               </div>
+              <div>{moment(container.updatedAt).format('HH:mm DD/MM/YYYY')}</div>
               <div>
                 <span>Confirmed: </span> {container.isConfirmed && <Icon type="check" />}
               </div>
@@ -90,9 +91,6 @@ class DetailContainer extends Component {
               <div>
                 <span>Type:</span> {container.type}
               </div>
-              <div>
-                <span>Time:</span> {moment(container.updatedAt).format('HH:mm DD/MM/YYYY')}
-              </div>              
             </Col>         
             <Col md={16} className={styles.preview}>
               {this.renderImage(container)}
