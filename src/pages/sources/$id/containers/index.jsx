@@ -13,7 +13,7 @@ import moment from 'moment';
 
 @connect(({ sourceDetail, loading }) => ({
   source: sourceDetail.current,
-  data: sourceDetail. dataContainer,
+  data: sourceDetail.dataContainer,
   loading: loading.effects['sourceDetail/fetchDataContainer'],
 }))
 class SourceContainers extends PureComponent {
@@ -25,8 +25,10 @@ class SourceContainers extends PureComponent {
     previewNumber: '',
   };
 
-  componentDidMount() {
-    this.fetchData();
+  async componentDidMount() {
+    setInterval(()=>{
+      this.fetchData();
+    },5000)
   }
 
   handleSelectRows = selectedRows => {
@@ -105,51 +107,51 @@ class SourceContainers extends PureComponent {
       title: 'Code Number',
       dataIndex: 'codeNumber',
     },
-    {
-      title: 'Confirmed',
-      dataIndex: 'isConfirmed',
-      render: isConfirmed => isConfirmed && <Icon type="check" />,
-    },
-    {
-      title: 'Owner',
-      dataIndex: 'owner',
-    },
-    {
-      title: 'Seri',
-      dataIndex: 'serial',
-    },
-    {
-      title: 'Type',
-      dataIndex: 'type',
-    },
-    {
-      title: 'Time',
-      dataIndex: 'updatedAt',
-      render: date => moment(date).format('HH:mm DD/MM/YYYY'),
-      sorter: true,
-    },
-    {
-      title: 'Actions',
-      dataIndex: '',
-      render: container => (
-        <span className={styles.actions}>
-          <Link to={`/containers/${container.id}`}>
-            <Tooltip title="View detail">
-              <Button type="link" shape="circle" icon="eye" />
-            </Tooltip>
-          </Link>
-          <Link to={`/sources/${container.source.id}/detail`}>
-            <Tooltip title="View source">
-              <Button type="link" shape="circle" icon="link" />
-            </Tooltip>
-          </Link>
-        </span>
-      ),
-    },
+    // {
+    //   title: 'Confirmed',
+    //   dataIndex: 'isConfirmed',
+    //   render: isConfirmed => isConfirmed && <Icon type="check" />,
+    // },
+    // {
+    //   title: 'Owner',
+    //   dataIndex: 'owner',
+    // },
+    // {
+    //   title: 'Seri',
+    //   dataIndex: 'serial',
+    // },
+    // {
+    //   title: 'Type',
+    //   dataIndex: 'type',
+    // },
+    // {
+    //   title: 'Time',
+    //   dataIndex: 'updatedAt',
+    //   render: date => moment(date).format('HH:mm DD/MM/YYYY'),
+    //   sorter: true,
+    // },
+    // {
+    //   title: 'Actions',
+    //   dataIndex: '',
+    //   render: container => (
+    //     <span className={styles.actions}>
+    //       <Link to={`/containers/${container.id}`}>
+    //         <Tooltip title="View detail">
+    //           <Button type="link" shape="circle" icon="eye" />
+    //         </Tooltip>
+    //       </Link>
+    //       <Link to={`/sources/${container.source.id}/detail`}>
+    //         <Tooltip title="View source">
+    //           <Button type="link" shape="circle" icon="link" />
+    //         </Tooltip>
+    //       </Link>
+    //     </span>
+    //   ),
+    // },
   ];
 
   render() {
-    const { data, loading } = this.props;
+    const { data, source } = this.props;
     const { selectedRows, previewVisible, previewImage, previewNumber, previewVideo } = this.state;
     return (
       <GridContent>
@@ -169,15 +171,32 @@ class SourceContainers extends PureComponent {
             />
           </Col>
         </Row>
-        <StandardTable
-          rowKey="id"
-          selectedRows={selectedRows}
-          onSelectRow={this.handleSelectRows}
-          loading={loading}
-          data={data}
-          columns={this.columns}
-          onChange={this.handleTableChange}
-        />
+        <Row gutter={24} className={styles.content}>
+          <Col md={8} className={styles.preview}>
+            {source.type !== 'Video' ? (
+              <img src={(source.file && source.file.url) || source.url} />
+            ) : (
+              <video controls>
+                <source
+                  src={(source.file && source.file.url) || source.url}
+                  type={source.file && source.file.mime}
+                ></source>
+              </video>
+            )}
+          </Col>
+          <Col md={16}>
+            <StandardTable
+              rowKey="id"
+              selectedRows={selectedRows}
+              onSelectRow={this.handleSelectRows}
+              //loading={loading}
+              data={data}
+              columns={this.columns}
+              onChange={this.handleTableChange}
+              scroll={{ x: 'fit-content' }}
+            />
+          </Col>
+        </Row>
         <Modal width={680} visible={previewVisible} destroyOnClose footer={null} onCancel={this.handleCancel}>
           <h2>{previewNumber}</h2>
           {previewVideo ? (

@@ -78,13 +78,17 @@ class Sources extends Component {
     });
   };
 
-  scanSource = id => {
+  scanSource = source => {
     const { dispatch } = this.props;
     dispatch({
       type: 'sources/runWorker',
-      payload: id,
+      payload: source._id,
       callback: () => {
-        router.push('/containers');
+        if(source.type !== "Image") {
+          router.push('/sources/'+source._id+'/containers');
+        } else {
+          router.push('/containers');
+        }        
       },
     });
   };
@@ -134,17 +138,17 @@ class Sources extends Component {
     },
     {
       title: 'Actions',
-      dataIndex: 'id',
-      render: id => (
+      //dataIndex: 'id',
+      render: (source) => (
         <span className={styles.actions}>
-          <Link to={`/sources/${id}/detail`}>
+          <Link to={`/sources/${source._id}/detail`}>
             <Tooltip title="View detail">
               <Button type="link" shape="circle" icon="eye" />
             </Tooltip>
           </Link>
           {/* <Link to={`/sources/${id}/container`}> */}
           <Tooltip title="Run Worker to Scan">
-            <Button type="link" shape="circle" icon="scan" onClick={() => this.scanSource(id)} />
+            <Button type="link" shape="circle" icon="scan" onClick={() => this.scanSource(source)} />
           </Tooltip>
           {/* </Link> */}
         </span>

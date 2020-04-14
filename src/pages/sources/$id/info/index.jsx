@@ -57,13 +57,13 @@ class DetailSource extends Component {
               <span>File preview:</span>
             </div>
             <div className={styles.preview}>
-              {source.type == 'Image' ? (
+              {source.type !== 'Video' ? (
                 <img src={(source.file && source.file.url) || source.url} />
               ) : (
                 <video controls>
                   <source
-                    src={(source.file && source.file.url) || url}
-                    type={source.file.mime}
+                    src={(source.file && source.file.url) || source.url}
+                    type={source.file && source.file.mime}
                   ></source>
                 </video>
               )}

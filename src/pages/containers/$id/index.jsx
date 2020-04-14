@@ -1,4 +1,4 @@
-import { Col, Row, PageHeader, Icon } from 'antd';
+import { Col, Row, PageHeader, Icon, Card } from 'antd';
 import React, { Component } from 'react';
 import { GridContent } from '@ant-design/pro-layout';
 import { connect } from 'dva';
@@ -59,12 +59,13 @@ class DetailContainer extends Component {
   }
 
   render() {
-    const { container } = this.props;
+    const { container, loading } = this.props;
     return (
       <PageHeader 
         className="site-page-header"
         onBack={() => window.history.back()}
         title="Container detail">
+        <Card loading={loading} bordered={false}>
         <GridContent>
           <Row gutter={24}>
             <Col md={8} className={styles.content}>
@@ -93,11 +94,12 @@ class DetailContainer extends Component {
                 <span>Time:</span> {moment(container.updatedAt).format('HH:mm DD/MM/YYYY')}
               </div>              
             </Col>         
-            <Col md={16} className={styles.image}>
+            <Col md={16} className={styles.preview}>
               {this.renderImage(container)}
             </Col>
           </Row>
         </GridContent>
+        </Card>
       </PageHeader>
     );
   }
