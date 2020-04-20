@@ -10,8 +10,7 @@ import moment from 'moment';
   loading: loading.effects['containerDetail/fetchCurrent'],
 }))
 class DetailContainer extends Component {
-
-  state = {    
+  state = {
     previewVisible: false,
     previewImage: null,
     previewVideo: false,
@@ -36,67 +35,61 @@ class DetailContainer extends Component {
   };
 
   renderImage = container => {
-    let { image, source, codeNumber } = container;
-    image = image || source;
-    if (source && source.type == 'Video')
-      return (
-        <Avatar
-          src={image.url}
-          shape="square"
-          size={80}
-          icon="video-camera"
-          onClick={() => this.handlePreview(image.url, codeNumber, 'Video')}
-        />
-      );
+    let { image, source, codeNumber, url } = container;
+    image = (url ? { url } : (image || source));
+    if(!image) return null
     return (
       <img
         className={styles.image}
-        //height={80}
-        src={image && image.url}
+        height={60}
+        src={image.url}
         onClick={() => this.handlePreview(image.url, codeNumber)}
       />
     );
-  }
+  };
 
   render() {
     const { container, loading } = this.props;
     return (
-      <PageHeader 
+      <PageHeader
         className="site-page-header"
         onBack={() => window.history.back()}
-        title="Container detail">
+        title="Container detail"
+      >
         <Card loading={loading} bordered={false}>
-        <GridContent>
-          <Row gutter={24}>
-            <Col md={8} className={styles.content}>
-              <div>
-                <h2>{container.codeNumber}</h2>
-              </div>
-              <div>{moment(container.updatedAt).format('HH:mm DD/MM/YYYY')}</div>
-              <div>
-                <span>Confirmed: </span> {container.isConfirmed && <Icon type="check" />}
-              </div>
-              <div>
-                <span>Owner:</span> {container.owner}
-              </div>
-              <div>
-                <span>Seri:</span> {container.serial}
-              </div>
-              <div>
-                <span>Reliability:</span>{container.reliability}                
-              </div>
-              <div>
-                <span>Processing Time:</span>{container.processingTime}                
-              </div>
-              <div>
-                <span>Type:</span> {container.type}
-              </div>
-            </Col>         
-            <Col md={16} className={styles.preview}>
-              {this.renderImage(container)}
-            </Col>
-          </Row>
-        </GridContent>
+          <GridContent>
+            <Row gutter={24}>
+              <Col md={8} className={styles.content}>
+                <div>
+                  <h2>{container.codeNumber}</h2>
+                </div>
+                <div>{moment(container.updatedAt).format('HH:mm DD/MM/YYYY')}</div>
+                <div>
+                  <span>Confirmed: </span> {container.isConfirmed && <Icon type="check" />}
+                </div>
+                <div>
+                  <span>Owner:</span> {container.owner}
+                </div>
+                <div>
+                  <span>Seri:</span> {container.serial}
+                </div>
+                <div>
+                  <span>Reliability:</span>
+                  {container.reliability}
+                </div>
+                <div>
+                  <span>Processing Time:</span>
+                  {container.processingTime}
+                </div>
+                <div>
+                  <span>Type:</span> {container.type}
+                </div>
+              </Col>
+              <Col md={16} className={styles.preview}>
+                {this.renderImage(container)}
+              </Col>
+            </Row>
+          </GridContent>
         </Card>
       </PageHeader>
     );

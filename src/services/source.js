@@ -1,7 +1,7 @@
 /* eslint-disable eslint-comments/disable-enable-pair */
 /* eslint-disable no-underscore-dangle */
 import strapi from '@/utils/strapi';
-import { GET_PARAMS, API_URL } from '@/utils/constants';
+import { GET_PARAMS, API_URL, OCR_URL } from '@/utils/constants';
 import { convertFilter } from '@/utils/utils';
 import { func } from 'prop-types';
 
@@ -22,6 +22,12 @@ export async function createSource({ files, ...params }) {
   });
 }
 export const runWorker = async id => strapi.request('post', `${API_URL}/sources/${id}/run`);
+export const stopWorker = async ({ id }) => {
+  try {
+    await fetch(`${OCR_URL}/stop/${id}`,{mode: "no-cors"});
+  } catch (e) {}
+  return strapi.request('post', `${API_URL}/sources/${id}/stop`);
+};
 
 export async function updateSource(id, params) {
   return strapi.updateEntry('sources', id, params);

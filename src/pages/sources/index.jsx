@@ -80,17 +80,18 @@ class Sources extends Component {
 
   scanSource = source => {
     const { dispatch } = this.props;
-    dispatch({
-      type: 'sources/runWorker',
-      payload: source._id,
-      callback: () => {
-        if(source.type !== "Image") {
-          router.push('/sources/'+source._id+'/containers');
-        } else {
+    if(source.type == "Image") {
+      dispatch({
+        type: 'sources/runWorker',
+        payload: source._id,
+        callback: () => {
           router.push('/containers');
-        }        
-      },
-    });
+            
+        },
+      });
+    } else {
+      router.push('/sources/'+source._id+'/containers');
+    }  
   };
 
   columns = [
@@ -110,11 +111,11 @@ class Sources extends Component {
       title: 'Name',
       dataIndex: 'name',
     },
-    {
-      title: 'Offline',
-      dataIndex: 'isOffline',
-      render: isOffline => isOffline && <Icon type="check" />,
-    },
+    // {
+    //   title: 'Offline',
+    //   dataIndex: 'isOffline',
+    //   render: isOffline => isOffline && <Icon type="check" />,
+    // },
     {
       title: 'Type',
       dataIndex: 'type',
@@ -130,12 +131,12 @@ class Sources extends Component {
         return <Tag color={color}>{state}</Tag>;
       },
     },
-    {
-      title: 'Updated At',
-      dataIndex: 'updatedAt',
-      render: date => moment(date).format('HH:mm DD/MM/YYYY'),
-      sorter: true,
-    },
+    // {
+    //   title: 'Updated At',
+    //   dataIndex: 'updatedAt',
+    //   render: date => moment(date).format('HH:mm DD/MM/YYYY'),
+    //   sorter: true,
+    // },
     {
       title: 'Actions',
       //dataIndex: 'id',

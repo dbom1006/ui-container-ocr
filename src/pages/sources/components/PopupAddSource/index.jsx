@@ -29,7 +29,7 @@ const FormItem = Form.Item;
 class PopupAddSource extends Component {
 
   state = {
-    typeOfSource: "Image"
+    typeOfSource: "Video"
   }
 
   openNotificationWithIcon = type => {
@@ -126,10 +126,10 @@ class PopupAddSource extends Component {
               <Col md={8}>
                 <FormItem label="Type">
                   {getFieldDecorator('type', {
-                    initialValue: typeSource || 'Image',
+                    initialValue: typeSource || 'Video',
                   })(
                     <Select placeholder="Select type of source" onChange={this.onChangeType}>
-                      <Select.Option value="Image">Image</Select.Option>
+                      {/* <Select.Option value="Image">Image</Select.Option> */}
                       <Select.Option value="Video">Video</Select.Option>
                       <Select.Option value="Camera">Camera</Select.Option>
                     </Select>,
@@ -147,7 +147,7 @@ class PopupAddSource extends Component {
               </Col>              
               {
                 typeOfSource !== "Camera" &&
-                <Col md={24}>
+                <Col md={10}>
                   <Form.Item
                     label="Upload Source"
                     extra="Select Image or Video (Max: 100MB)"
@@ -176,8 +176,8 @@ class PopupAddSource extends Component {
                 </Col>
               }
               {
-                typeOfSource === "Camera" &&
-                <Col md={24}>
+                typeOfSource !== "Image" &&
+                <Col md={14}>
                   <FormItem label="URL Source">
                     {getFieldDecorator('url', {
                       // rules: [

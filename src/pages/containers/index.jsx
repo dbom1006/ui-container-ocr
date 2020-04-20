@@ -73,25 +73,15 @@ class ListContainers extends Component {
 
   columns = [
     {
-      title: 'Container Image',
+      title: 'Image',
       dataIndex: '',
-      render: ({ image, source, codeNumber }) => {
-        image = image || source;
-        if (source && source.type == 'Video')
-          return (
-            <Avatar
-              src={image.url}
-              shape="square"
-              size={80}
-              icon="video-camera"
-              onClick={() => this.handlePreview(image.url, codeNumber, 'Video')}
-            />
-          );
+      render: ({ image, url, source, codeNumber }) => {
+        image = (url ? { url } : null) || image || source;
         return (
           <img
             className={styles.image}
-            height={80}
-            src={image && image.url}
+            height={60}
+            src={image.url}
             onClick={() => this.handlePreview(image.url, codeNumber)}
           />
         );
@@ -100,11 +90,6 @@ class ListContainers extends Component {
     {
       title: 'Code Number',
       dataIndex: 'codeNumber',
-    },
-    {
-      title: 'Confirmed',
-      dataIndex: 'isConfirmed',
-      render: isConfirmed => isConfirmed && <Icon type="check" />,
     },
     {
       title: 'Owner',
@@ -174,7 +159,13 @@ class ListContainers extends Component {
           columns={this.columns}
           onChange={this.handleTableChange}
         />
-        <Modal width={680} visible={previewVisible} destroyOnClose footer={null} onCancel={this.handleCancel}>
+        <Modal
+          width={680}
+          visible={previewVisible}
+          destroyOnClose
+          footer={null}
+          onCancel={this.handleCancel}
+        >
           <h2>{previewNumber}</h2>
           {previewVideo ? (
             <video style={{ width: '100%' }} controls>

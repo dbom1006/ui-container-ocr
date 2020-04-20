@@ -1,5 +1,5 @@
-import { getSourceDetail } from '@/services/source';
-import { getDataContainers } from '@/services/container';
+import { getSourceDetail, runWorker, stopWorker } from '@/services/source';
+import { getDataContainers, removeContainer } from '@/services/container';
 
 const Model = {
   namespace: 'sourceDetail',
@@ -34,6 +34,28 @@ const Model = {
         type: 'saveDataContainer',
         payload: response,
       });
+    },
+    *runWorker({ payload, callback }, { call, put }) {
+      const response = yield call(runWorker, payload);
+      if (response) {
+        yield put({
+          type: 'saveCurrent',
+          payload: response,
+        });
+        callback && callback();
+      }
+    },
+    *stopWorker({ payload, callback }, { call, put }) {
+      const response = yield call(stopWorker, payload);
+      if (response) {
+        callback && callback();
+      }
+    },
+    *deleteContainer({ payload, callback }, { call, put }) {
+      const response = yield call(removeContainer, payload);
+      if (response) {
+        callback && callback();
+      }
     },
   },
   reducers: {

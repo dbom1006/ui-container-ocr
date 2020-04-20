@@ -1,4 +1,4 @@
-import { getDataSources, createSource, runWorker } from '@/services/source';
+import { getDataSources, createSource, runWorker, stopWorker } from '@/services/source';
 
 const SourcesModel = {
   namespace: 'sources',
@@ -28,13 +28,7 @@ const SourcesModel = {
         });
         callback && callback();
       }
-    },
-    *runWorker({ payload, callback }, { call, put }) {
-      const response = yield call(runWorker, payload);
-      if (response) {
-        callback && callback();
-      }
-    },
+    }
   },
   reducers: {
     save(state, action) {

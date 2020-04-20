@@ -1,4 +1,17 @@
-import { Avatar, Card, Col, Icon, Input, Row, Button, Table, Tooltip, message, Modal } from 'antd';
+import {
+  Avatar,
+  Card,
+  Col,
+  Icon,
+  Input,
+  Row,
+  Button,
+  Table,
+  Tooltip,
+  message,
+  Modal,
+  Alert,
+} from 'antd';
 import React, { PureComponent } from 'react';
 import { GridContent, PageHeaderWrapper } from '@ant-design/pro-layout';
 import Link from 'umi/link';
@@ -7,6 +20,8 @@ import upperFirst from 'lodash/upperFirst';
 import styles from './style.less';
 import StandardTable from '@/components/StandardTable';
 import moment from 'moment';
+import Logo from '@/assets/logo.png';
+import { OCR_URL } from '@/utils/constants';
 
 // const isHired = state => ['CONFIRMED', 'WORKING', 'SEND_FUND', 'SEND_FUND_FAILED'].includes(state);
 // const isCheckin = state => ['WORKING', 'SEND_FUND', 'SEND_FUND_FAILED'].includes(state);
@@ -15,26 +30,68 @@ import moment from 'moment';
   source: sourceDetail.current,
   data: sourceDetail.dataContainer,
   loading: loading.effects['sourceDetail/fetchDataContainer'],
+  loadingButton:
+    loading.effects['sourceDetail/runWorker'] || loading.effects['sourceDetail/stopWorker'],
 }))
 class SourceContainers extends PureComponent {
   intervalId = null;
-  state = {
-    loaded: false,
-    selectedRows: [],
-    previewVisible: false,
-    previewImage: null,
-    previewVideo: false,
-    previewNumber: '',
-  };
 
-  componentDidMount() {
-    this.intervalId = setInterval(()=>{
-      this.fetchData();      
-    },3000)
+  constructor(props) {
+    super(props);
+    this.state = {
+      loaded: false,
+      state: props.source.state,
+      selectedRows: [],
+      previewVisible: false,
+      previewImage: null,
+      previewVideo: false,
+      previewNumber: '',
+    };
   }
 
+  componentDidMount() {
+    this.fetchData();
+  }
+
+  startWorker = () => {
+    const { dispatch, source } = this.props;
+    dispatch({
+      type: 'sourceDetail/runWorker',
+      payload: source._id,
+      callback: () => {
+        this.setState({ state: 'Processing' });
+        this.intervalId = setInterval(() => {
+          this.fetchData();
+        }, 2000);
+      },
+    });
+  };
+
+  stopWorker = () => {
+    const { dispatch, source } = this.props;
+    dispatch({
+      type: 'sourceDetail/stopWorker',
+      payload: { id: source._id },
+      callback: () => {
+        this.setState({ state: 'Pending' });
+        clearInterval(this.intervalId);
+      },
+    });
+  };
+
+  deleteContainer = id => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'sourceDetail/deleteContainer',
+      payload: id,
+      callback: () => {
+        this.fetchData();
+      },
+    });
+  };
+
   componentWillUnmount() {
-    clearInterval(this.intervalId)
+    clearInterval(this.intervalId);
   }
 
   handleSelectRows = selectedRows => {
@@ -66,12 +123,12 @@ class SourceContainers extends PureComponent {
       type: 'sourceDetail/fetchDataContainer',
       payload: {
         pagination,
-        filter: { ...filter, source: source._id},
+        filter: { ...filter, source: source._id },
         sort: { field, order },
         search,
       },
     });
-    this.setState({ loaded: true })
+    this.setState({ loaded: true });
   };
   handleCancel = () => this.setState({ previewVisible: false });
 
@@ -86,24 +143,14 @@ class SourceContainers extends PureComponent {
 
   columns = [
     {
-      title: 'Container Image',
+      title: 'Image',
       dataIndex: '',
-      render: ({ image, source, codeNumber }) => {
-        image = image || source;
-        if (source.type == 'Video')
-          return (
-            <Avatar
-              src={image.url}
-              shape="square"
-              size={80}
-              icon="video-camera"
-              onClick={() => this.handlePreview(image.url, codeNumber, 'Video')}
-            />
-          );
+      render: ({ image, url, source, codeNumber }) => {
+        image = (url ? { url } : null) || image || source;
         return (
           <img
             className={styles.image}
-            height={80}
+            height={60}
             src={image.url}
             onClick={() => this.handlePreview(image.url, codeNumber)}
           />
@@ -113,12 +160,29 @@ class SourceContainers extends PureComponent {
     {
       title: 'Code Number',
       dataIndex: 'codeNumber',
+      render: code => <b>{code}</b>,
     },
-    // {
-    //   title: 'Confirmed',
-    //   dataIndex: 'isConfirmed',
-    //   render: isConfirmed => isConfirmed && <Icon type="check" />,
-    // },
+    {
+      title: 'Time',
+      dataIndex: 'trackingTime',
+      render: time => moment(time).format('HH:mm DD/MM/YY'),
+    },
+    {
+      title: 'Actions',
+      dataIndex: '',
+      render: container => (
+        <span className={styles.actions}>
+          <Tooltip title="Delete">
+            <Button
+              type="link"
+              shape="circle"
+              icon="delete"
+              onClick={() => this.deleteContainer(container.id)}
+            />
+          </Tooltip>
+        </span>
+      ),
+    },
     // {
     //   title: 'Owner',
     //   dataIndex: 'owner',
@@ -137,38 +201,47 @@ class SourceContainers extends PureComponent {
     //   render: date => moment(date).format('HH:mm DD/MM/YYYY'),
     //   sorter: true,
     // },
-    // {
-    //   title: 'Actions',
-    //   dataIndex: '',
-    //   render: container => (
-    //     <span className={styles.actions}>
-    //       <Link to={`/containers/${container.id}`}>
-    //         <Tooltip title="View detail">
-    //           <Button type="link" shape="circle" icon="eye" />
-    //         </Tooltip>
-    //       </Link>
-    //       <Link to={`/sources/${container.source.id}/detail`}>
-    //         <Tooltip title="View source">
-    //           <Button type="link" shape="circle" icon="link" />
-    //         </Tooltip>
-    //       </Link>
-    //     </span>
-    //   ),
+
     // },
   ];
 
   render() {
-    const { data, loading, source } = this.props;
-    const { loaded, selectedRows, previewVisible, previewImage, previewNumber, previewVideo } = this.state;
+    const { data, loading, loadingButton, source } = this.props;
+    const {
+      state,
+      loaded,
+      selectedRows,
+      previewVisible,
+      previewImage,
+      previewNumber,
+      previewVideo,
+    } = this.state;
     return (
       <GridContent>
-        <Row type="flex" justify="space-between" className={styles.header}>
-          <Col md={6}>
-            <Button disabled={!selectedRows.length} type="primary">
-              Export CSV
-            </Button>
+        <Row type="flex" gutter={16} justify="space-between" className={styles.header}>
+          <Col lg={6}>
+            {state == 'Processing' && (
+              <Button type="danger" loading={loadingButton} onClick={this.stopWorker}>
+                Stop Worker
+              </Button>
+            )}
+            {(state == 'Pending' || state == 'Failed') && (
+              <Button type="primary" loading={loadingButton} onClick={this.startWorker}>
+                Start Worker
+              </Button>
+            )}
+            {state == 'Finished' && (
+              <div>
+                <Button type="primary" loading={loadingButton} onClick={this.startWorker}>
+                  Restart Worker
+                </Button>
+                <Button type="primary" disabled={!selectedRows.length}>
+                  Export CSV
+                </Button>
+              </div>
+            )}
           </Col>
-          <Col md={6}>
+          <Col lg={6}>
             <Input.Search
               placeholder="Enter to search source"
               enterButton
@@ -179,10 +252,21 @@ class SourceContainers extends PureComponent {
           </Col>
         </Row>
         <Row gutter={24} className={styles.content}>
-          <Col md={8} className={styles.preview}>
-            {source.type !== 'Video' ? (
+          <Col lg={12} className={styles.preview}>
+            {source.type === 'Image' && (
               <img src={(source.file && source.file.url) || source.url} />
-            ) : (
+            )}
+            {state == 'Processing' && (source.type === 'Camera' || source.type === 'Video') && (
+              <img
+                ref={el => (this.img = el)}
+                src={OCR_URL + '/video/' + source.id}
+                onError={() => {
+                  this.img.src = '/icons/icon-512x512.png';
+                }}
+              />
+            )}
+            {state != 'Processing' && source.type === 'Camera' && <img src={source.url} />}
+            {state != 'Processing' && source.type === 'Video' && (
               <video controls>
                 <source
                   src={(source.file && source.file.url) || source.url}
@@ -191,11 +275,9 @@ class SourceContainers extends PureComponent {
               </video>
             )}
           </Col>
-          <Col md={16}>
+          <Col lg={12}>
             <StandardTable
               rowKey="id"
-              selectedRows={selectedRows}
-              onSelectRow={this.handleSelectRows}
               loading={!loaded}
               data={data}
               columns={this.columns}
@@ -204,7 +286,13 @@ class SourceContainers extends PureComponent {
             />
           </Col>
         </Row>
-        <Modal width={680} visible={previewVisible} destroyOnClose footer={null} onCancel={this.handleCancel}>
+        <Modal
+          width={680}
+          visible={previewVisible}
+          destroyOnClose
+          footer={null}
+          onCancel={this.handleCancel}
+        >
           <h2>{previewNumber}</h2>
           {previewVideo ? (
             <video style={{ width: '100%' }} controls>
