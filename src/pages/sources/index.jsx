@@ -9,6 +9,7 @@ import moment from 'moment';
 import { round2 } from '@/utils/utils';
 import PopupAddSource from '@/pages/sources/components/PopupAddSource';
 import { router } from 'umi';
+import { SOURCE_STATES } from '@/utils/constants';
 
 @connect(({ sources, loading }) => ({
   data: sources.data,
@@ -96,7 +97,7 @@ class Sources extends Component {
 
   columns = [
     {
-      title: 'Image',
+      title: 'Hình ảnh',
       dataIndex: '',
       render: ({ file, url, type }) => (
         <Avatar
@@ -108,7 +109,7 @@ class Sources extends Component {
       ),
     },
     {
-      title: 'Name',
+      title: 'Tên',
       dataIndex: 'name',
     },
     // {
@@ -117,18 +118,18 @@ class Sources extends Component {
     //   render: isOffline => isOffline && <Icon type="check" />,
     // },
     {
-      title: 'Type',
+      title: 'Vị trí',
+      dataIndex: 'position',
+    },
+    {
+      title: 'Loại',
       dataIndex: 'type',
     },
     {
-      title: 'State',
+      title: 'Trạng thái',
       dataIndex: 'state',
       render: (state = 'Pending') => {
-        let color = 'gold';
-        if (state == 'Processing') color = '#1890ff';
-        if (state == 'Finished') color = '#52c41a';
-        if (state == 'Failed') color = '#f5222d';
-        return <Tag color={color}>{state}</Tag>;
+        return <Tag color={SOURCE_STATES[state].color}>{SOURCE_STATES[state].label}</Tag>;
       },
     },
     // {
@@ -138,7 +139,7 @@ class Sources extends Component {
     //   sorter: true,
     // },
     {
-      title: 'Actions',
+      title: 'Hành động',
       //dataIndex: 'id',
       render: (source) => (
         <span className={styles.actions}>
@@ -172,7 +173,7 @@ class Sources extends Component {
         <Row type="flex" justify="space-between" className={styles.header}>
           <Col md={6}>
             <Button type="primary" onClick={this.showAddPopup}>
-              Add Source
+              Thêm mới nguồn dữ liệu
             </Button>
           </Col>
           <Col md={6}>

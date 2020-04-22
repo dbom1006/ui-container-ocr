@@ -80,12 +80,9 @@ export default {
   'menu.booking': 'Booking',
   'menu.updateBooking': 'Update Booking',
   'menu.containers': 'Containers',
-  'menu.sources': 'Sources',
-  'menu.sources.detail':"Detail",
-  'menu.sources.detail.info':"Info",
-  'menu.tender.roster': 'Your Roster',
-  'menu.tender.block': 'Blocked',
-  'menu.tender.past': 'Past Tenders',
-  'menu.sources.detail.containers': 'Containers detail',
-  'menu.containers.detail': 'Container detail'
+  'menu.sources': 'Nguồn dữ liệu',
+  'menu.sources.detail':"Chi tiết",
+  'menu.sources.detail.info':"Thông tin chung",
+  'menu.sources.detail.containers': 'Danh sách Containers',
+  'menu.containers.detail': 'Chi tiết Container'
 };

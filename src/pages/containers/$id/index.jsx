@@ -36,25 +36,29 @@ class DetailContainer extends Component {
 
   renderImage = container => {
     let { image, source, codeNumber, url } = container;
-    image = (url ? { url } : (image || source));
-    if(!image) return null
-    return (
+    image = url ? { url } : image || source;
+    if (!image) return null;
+    return [
+      <img className={styles.image} height={60} src={image.url.replace('/out/', '/out/full-')} />,
       <img
         className={styles.image}
         height={60}
         src={image.url}
         onClick={() => this.handlePreview(image.url, codeNumber)}
-      />
-    );
+      />,
+    ];
   };
 
   render() {
     const { container, loading } = this.props;
+    let { image, source, codeNumber, url } = container;
+    image = url ? { url } : image || source;
+    if (!image) image = { url: '' };
     return (
       <PageHeader
         className="site-page-header"
         onBack={() => window.history.back()}
-        title="Container detail"
+        title="Chi tiết Container"
       >
         <Card loading={loading} bordered={false}>
           <GridContent>
@@ -63,30 +67,33 @@ class DetailContainer extends Component {
                 <div>
                   <h2>{container.codeNumber}</h2>
                 </div>
-                <div>{moment(container.updatedAt).format('HH:mm DD/MM/YYYY')}</div>
+                <div><i>{moment(container.updatedAt).format('HH:mm DD/MM/YYYY')}</i></div>
                 <div>
-                  <span>Confirmed: </span> {container.isConfirmed && <Icon type="check" />}
+                  <span>Xác nhận: </span> {container.isConfirmed && <Icon type="check" />}
                 </div>
                 <div>
-                  <span>Owner:</span> {container.owner}
+                  <span>Mã Owner:</span> {container.owner}
                 </div>
                 <div>
-                  <span>Seri:</span> {container.serial}
-                </div>
-                <div>
-                  <span>Reliability:</span>
-                  {container.reliability}
-                </div>
-                <div>
-                  <span>Processing Time:</span>
-                  {container.processingTime}
+                  <span>Mã Seri:</span> {container.serial}
                 </div>
                 <div>
                   <span>Type:</span> {container.type}
                 </div>
+                <div>
+                  <span>Độ tin cậy:</span>
+                  {container.reliability}
+                </div>
+                <div>
+                  <img
+                    className={styles.image}
+                    src={image.url}
+                    onClick={() => this.handlePreview(image.url, codeNumber)}
+                  />
+                </div>
               </Col>
               <Col md={16} className={styles.preview}>
-                {this.renderImage(container)}
+                <img src={image.url.replace('/out/', '/out/full-')} />
               </Col>
             </Row>
           </GridContent>

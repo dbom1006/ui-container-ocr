@@ -79,25 +79,25 @@ class Login extends Component {
     return (
       <Card bordered={false}>
         <Row gutter={12} type="flex" justify="end" className={styles.header}>
-          <Col className={styles.textHeader}>What is Container Detection?</Col>
+          <Col className={styles.textHeader}>Container Detection là gì?</Col>
           <Col md={4} className={styles.btnSignUp}>
             <a href="https://nanonets.com/case-study/shipping-container" target="_blank">
               <Button style={{ height: 36 }} block>
-                See more
+                Xem thêm
               </Button>
             </a>
           </Col>
         </Row>
         <div className={styles.main}>
           <div className={styles.headerForm}>
-            <h1>Sign in to CONDET</h1>
-            <p>Enter your details below</p>
+            <h1>Đăng nhập vào CONDET</h1>
+            <p>Điền thông tin chi tiết phía dưới</p>
           </div>
           {error && this.renderMessage(error)}
           <Form onSubmit={this.handleSubmit} className="login-form">
             <Form.Item>
               {getFieldDecorator('username', {
-                rules: [{ required: true, message: 'Please input your email!' }],
+                rules: [{ required: true, message: 'Vui lòng nhập email của bạn!' }],
               })(
                 <Input
                   className={styles.inputIcon}
@@ -108,7 +108,7 @@ class Login extends Component {
             </Form.Item>
             <Form.Item>
               {getFieldDecorator('password', {
-                rules: [{ required: true, message: 'Please input your Password!' }],
+                rules: [{ required: true, message: 'Vui lòng nhập Password của bạn!' }],
               })(
                 <Input.Password
                   className={styles.inputIcon}
@@ -126,12 +126,12 @@ class Login extends Component {
                   type="primary"
                   htmlType="submit"
                 >
-                  Sign in
+                  Đăng nhập
                 </Button>
               </Col>
               <Col xs={12}>
                 <a className={styles.textForgot} href="mailto:ttduc@tenomad.com" target="_blank">
-                  Get Account to Login System
+                  Liên hệ nhận tài khoản thử nghiệm
                 </a>
               </Col>
             </Row>

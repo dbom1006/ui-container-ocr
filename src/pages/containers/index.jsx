@@ -73,7 +73,7 @@ class ListContainers extends Component {
 
   columns = [
     {
-      title: 'Image',
+      title: 'Hình ảnh',
       dataIndex: '',
       render: ({ image, url, source, codeNumber }) => {
         image = (url ? { url } : null) || image || source;
@@ -88,29 +88,23 @@ class ListContainers extends Component {
       },
     },
     {
-      title: 'Code Number',
+      title: 'Mã Container',
       dataIndex: 'codeNumber',
+      render: code => <b>{code}</b>,
     },
     {
-      title: 'Owner',
-      dataIndex: 'owner',
-    },
-    {
-      title: 'Seri',
-      dataIndex: 'serial',
-    },
-    {
-      title: 'Type',
-      dataIndex: 'type',
-    },
-    {
-      title: 'Time',
+      title: 'Thời gian nhận diện',
       dataIndex: 'updatedAt',
       render: date => moment(date).format('HH:mm DD/MM/YYYY'),
       sorter: true,
     },
     {
-      title: 'Actions',
+      title: 'Vị trí - Nguồn',
+      dataIndex: 'source',
+      render: source => [source.position,source.name].filter(Boolean).join(','),
+    },
+    {
+      title: 'Hành động',
       dataIndex: '',
       render: container => (
         <span className={styles.actions}>
@@ -133,11 +127,11 @@ class ListContainers extends Component {
     const { data, loading } = this.props;
     const { selectedRows, previewVisible, previewImage, previewNumber, previewVideo } = this.state;
     return (
-      <PageHeaderWrapper title="Container">
+      <PageHeaderWrapper title="Danh sách Container">
         <Row type="flex" justify="space-between" className={styles.header}>
           <Col md={6}>
             <Button disabled={!selectedRows.length} type="primary">
-              Export CSV
+              Xuất ra file CSV
             </Button>
           </Col>
           <Col md={6}>

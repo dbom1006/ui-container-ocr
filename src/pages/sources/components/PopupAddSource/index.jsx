@@ -95,7 +95,7 @@ class PopupAddSource extends Component {
       visible,
       submitting,
     } = this.props;
-    const { name = '', isOffline = true, type: typeSource, url, tag, file } = dataPopup || {};
+    const { name = '', isOffline = true, type: typeSource, url,position, tag, file } = dataPopup || {};
     const files = getFieldValue('files') || [];
     return (
       <GridContent>
@@ -111,7 +111,7 @@ class PopupAddSource extends Component {
           <Form onSubmit={onSubmit} layout="vertical">
             <Row gutter={12}>
               <Col md={12}>
-                <FormItem label="Name">
+                <FormItem label="Tên">
                   {getFieldDecorator('name', {
                     rules: [
                       {
@@ -120,11 +120,11 @@ class PopupAddSource extends Component {
                       },
                     ],
                     initialValue: name,
-                  })(<Input placeholder="Enter source name" />)}
+                  })(<Input placeholder="" />)}
                 </FormItem>
               </Col>
               <Col md={8}>
-                <FormItem label="Type">
+                <FormItem label="Loại">
                   {getFieldDecorator('type', {
                     initialValue: typeSource || 'Video',
                   })(
@@ -149,8 +149,8 @@ class PopupAddSource extends Component {
                 typeOfSource !== "Camera" &&
                 <Col md={10}>
                   <Form.Item
-                    label="Upload Source"
-                    extra="Select Image or Video (Max: 100MB)"
+                    label="Upload file"
+                    extra="Chọn Ảnh hoặc Video (Max: 100MB)"
                     className={styles.upload}
                   >
                     {getFieldDecorator('files', {
@@ -178,7 +178,7 @@ class PopupAddSource extends Component {
               {
                 typeOfSource !== "Image" &&
                 <Col md={14}>
-                  <FormItem label="URL Source">
+                  <FormItem label="URL Nguồn/Camera">
                     {getFieldDecorator('url', {
                       // rules: [
                       //   {
@@ -191,15 +191,32 @@ class PopupAddSource extends Component {
                       //   },
                       // ],
                       initialValue: url,
-                    })(<Input placeholder="Enter url source" />)}
+                    })(<Input placeholder="" />)}
                   </FormItem>
                 </Col>
-              }              
+              }         
+              <Col md={14}>
+                <FormItem label="Vị trí">
+                  {getFieldDecorator('position', {
+                    // rules: [
+                    //   {
+                    //     required: files.length == 0,
+                    //     message: 'Please input url source!',
+                    //   },
+                    //   {
+                    //     type: 'url',
+                    //     message: 'Please input valid url!',
+                    //   },
+                    // ],
+                    initialValue: position,
+                  })(<Input placeholder="" />)}
+                </FormItem>
+              </Col>     
               <Col md={24}>
-                <FormItem label="Tags">
+                <FormItem label="Ghi chú thêm">
                   {getFieldDecorator('tag', {
                     initialValue: tag,
-                  })(<Input placeholder="Enter source tag" />)}
+                  })(<Input placeholder="" />)}
                 </FormItem>
               </Col>
             </Row>

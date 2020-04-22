@@ -9,11 +9,11 @@ import styles from './style.less';
 const tabList = [
   {
     key: 'detail',
-    tab: 'Info',
+    tab: 'Thông tin',
   },
   {
     key: 'containers',
-    tab: 'Containers',
+    tab: 'Xử lý Containers',
   },
 ];
 
@@ -57,7 +57,7 @@ class PastStaffings extends Component {
   render() {
     const { children, loading } = this.props;
     return (
-      <PageHeaderWrapper title="Source Media - Camera Detail">
+      <PageHeaderWrapper title="Chi tiết nguồn dữ liệu - Camera">
         <Card
           className={styles.tabsCard}
           bordered={false}

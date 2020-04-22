@@ -143,7 +143,7 @@ class SourceContainers extends PureComponent {
 
   columns = [
     {
-      title: 'Image',
+      title: 'Ảnh',
       dataIndex: '',
       render: ({ image, url, source, codeNumber }) => {
         image = (url ? { url } : null) || image || source;
@@ -158,17 +158,17 @@ class SourceContainers extends PureComponent {
       },
     },
     {
-      title: 'Code Number',
+      title: 'Mã Container',
       dataIndex: 'codeNumber',
       render: code => <b>{code}</b>,
     },
     {
-      title: 'Time',
+      title: 'Thời gian',
       dataIndex: 'trackingTime',
       render: time => moment(time).format('HH:mm DD/MM/YY'),
     },
     {
-      title: 'Actions',
+      title: '',
       dataIndex: '',
       render: container => (
         <span className={styles.actions}>
@@ -219,27 +219,20 @@ class SourceContainers extends PureComponent {
     return (
       <GridContent>
         <Row type="flex" gutter={16} justify="space-between" className={styles.header}>
-          <Col lg={6}>
+          <Col lg={8}>
             {state == 'Processing' && (
               <Button type="danger" loading={loadingButton} onClick={this.stopWorker}>
-                Stop Worker
+                Dừng Worker
               </Button>
             )}
-            {(state == 'Pending' || state == 'Failed') && (
+            {state != 'Processing' && (
               <Button type="primary" loading={loadingButton} onClick={this.startWorker}>
-                Start Worker
+                Bắt đầu Worker
               </Button>
             )}
-            {state == 'Finished' && (
-              <div>
-                <Button type="primary" loading={loadingButton} onClick={this.startWorker}>
-                  Restart Worker
-                </Button>
-                <Button type="primary" disabled={!selectedRows.length}>
-                  Export CSV
-                </Button>
-              </div>
-            )}
+            <Button type="primary" disabled={!selectedRows.length}>
+              Xuất ra file CSV
+            </Button>
           </Col>
           <Col lg={6}>
             <Input.Search

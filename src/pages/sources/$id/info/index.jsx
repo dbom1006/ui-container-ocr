@@ -7,6 +7,7 @@ import styles from './style.less';
 import moment from 'moment';
 import EmbededGoogleMap from '@/components/GoogleMaps/EmbededGoogleMap';
 import { round2 } from '@/utils/utils';
+import { SOURCE_STATES } from '@/utils/constants';
 
 @connect(({ sourceDetail, settings, loading }) => ({
   source: sourceDetail.current,
@@ -28,28 +29,31 @@ class DetailSource extends Component {
         <Row gutter={24}>
           <Col md={8} className={styles.content}>
             <div>
-              <span>Name:</span> {source.name}
+              <span>Tên:</span> {source.name}
             </div>
             <div>
-              <span>StateL </span> {this.renderState(source.state)}
+              <span>Trạng thái: </span>
+              <Tag color={SOURCE_STATES[source.state].color}>
+                {SOURCE_STATES[source.state].label}
+              </Tag>
             </div>
             <div>
-              <span>Status:</span> {source.isOffline ? 'Offline' : 'Online'}
+              <span>Chế độ:</span> {source.isOffline ? 'Offline' : 'Online'}
             </div>
             <div>
-              <span>Date time:</span> {moment(source.updatedAt).format('HH:mm DD/MM/YYYY')}
+              <span>Thời gian:</span> {moment(source.updatedAt).format('HH:mm DD/MM/YYYY')}
             </div>
             <div>
-              <span>Url:</span>{' '}
+              <span>URL Nguồn/Camera:</span>{' '}
               <a href={source.url} target="_blank">
                 {source.url}
               </a>
             </div>
             <div>
-              <span>Type:</span> {source.type}
+              <span>Loại:</span> {source.type}
             </div>
             <div>
-              <span>Tag:</span> {source.tag}
+              <span>Ghi chú thêm:</span> {source.tag}
             </div>
           </Col>
           <Col md={16} className={styles.content}>

@@ -67,7 +67,7 @@ export default {
   devtool: isAntDesignProPreview ? 'source-map' : false,
   theme: {
     'primary-color': primaryColor,
-    'font-family': "'Red Hat Display', sans-serif",
+    'font-family': "'Inter', sans-serif",
   },
   define: {
     ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION:

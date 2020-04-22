@@ -66,7 +66,7 @@ class FooterMenu extends React.Component {
               <div>
                 <Icon className={styles.icon} type="logout" />
               </div>
-              <span>Logout</span>
+              <span>Đăng xuất</span>
             </Menu.Item>
           </Menu>
         ) : (
