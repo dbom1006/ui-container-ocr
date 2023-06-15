@@ -24,7 +24,7 @@ export async function createSource({ files, ...params }) {
 export const runWorker = async id => strapi.request('post', `${API_URL}/sources/${id}/run`);
 export const stopWorker = async ({ id }) => {
   try {
-    await fetch(`${OCR_URL}/stop/${id}`,{mode: "no-cors"});
+    await fetch(`${OCR_URL}/stop/${id}`, { mode: 'no-cors' });
   } catch (e) {}
   return strapi.request('post', `${API_URL}/sources/${id}/stop`);
 };
@@ -54,11 +54,11 @@ export const getDataSources = async ({
     ...convertFilter(filter),
   };
   if (search) params._q = search;
-  const [list, total] = await Promise.all([getSources(params), getSourcesCount(params)]);
+  const res = await getSources(params);
   return {
-    list,
+    list: res.data,
     pagination: {
-      total,
+      total: res.meta.pagination.total,
       pageSize: params._limit,
       current: params._start / params._limit + 1,
     },

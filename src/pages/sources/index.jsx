@@ -81,18 +81,17 @@ class Sources extends Component {
 
   scanSource = source => {
     const { dispatch } = this.props;
-    if(source.type == "Image") {
+    if (source.type == 'Image') {
       dispatch({
         type: 'sources/runWorker',
         payload: source._id,
         callback: () => {
           router.push('/containers');
-            
         },
       });
     } else {
-      router.push('/sources/'+source._id+'/containers');
-    }  
+      router.push('/sources/' + source._id + '/containers');
+    }
   };
 
   columns = [
@@ -141,7 +140,7 @@ class Sources extends Component {
     {
       title: 'Hành động',
       //dataIndex: 'id',
-      render: (source) => (
+      render: source => (
         <span className={styles.actions}>
           <Link to={`/sources/${source._id}/detail`}>
             <Tooltip title="View detail">
@@ -150,7 +149,12 @@ class Sources extends Component {
           </Link>
           {/* <Link to={`/sources/${id}/container`}> */}
           <Tooltip title="Run Worker to Scan">
-            <Button type="link" shape="circle" icon="scan" onClick={() => this.scanSource(source)} />
+            <Button
+              type="link"
+              shape="circle"
+              icon="scan"
+              onClick={() => this.scanSource(source)}
+            />
           </Tooltip>
           {/* </Link> */}
         </span>
@@ -160,6 +164,7 @@ class Sources extends Component {
 
   render() {
     const { data, loading } = this.props;
+    console.log('🚀 ~ file: index.jsx:163 ~ Sources ~ render ~ data:', data);
     const { selectedRows, showPopup, typePopup, dataPopup } = this.state;
     return (
       <PageHeaderWrapper title="Media Source - Camera">

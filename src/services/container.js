@@ -5,26 +5,26 @@ import { GET_PARAMS } from '@/utils/constants';
 import { convertFilter } from '@/utils/utils';
 
 export async function getContainers(params) {
-  return strapi.getEntries('containers', params);
+  return strapi.getEntries('checkins', params);
 }
 
 export async function getContainersCount(params) {
-  return strapi.getEntryCount('containers', params);
+  return strapi.getEntryCount('checkins', params);
 }
 
 export async function createContainer(params) {
-  return strapi.createEntry('containers', params);
+  return strapi.createEntry('checkins', params);
 }
 
 export async function updateContainer(id, params) {
-  return strapi.updateEntry('containers', id, params);
+  return strapi.updateEntry('checkins', id, params);
 }
 
 export async function removeContainer(id) {
-  return strapi.deleteEntry('containers', id);
+  return strapi.deleteEntry('checkins', id);
 }
 
-export const getContainerDetail = id => strapi.getEntry('containers', id);
+export const getContainerDetail = id => strapi.getEntry('checkins', id);
 
 export const getDataContainers = async ({
   pagination = {},
@@ -41,11 +41,11 @@ export const getDataContainers = async ({
     ...convertFilter(filter),
   };
   if (search) params._q = search;
-  const [list, total] = await Promise.all([getContainers(params), getContainersCount(params)]);
+  const res = await getContainers(params);
   return {
-    list,
+    list: res.data,
     pagination: {
-      total,
+      total: res.meta.pagination.total,
       pageSize: params._limit,
       current: params._start / params._limit + 1,
     },

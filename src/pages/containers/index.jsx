@@ -75,14 +75,13 @@ class ListContainers extends Component {
     {
       title: 'Hình ảnh',
       dataIndex: '',
-      render: ({ image, url, source, codeNumber }) => {
-        image = (url ? { url } : null) || image || source;
+      render: ({ image }) => {
         return (
           <img
             className={styles.image}
             height={60}
-            src={image.url}
-            onClick={() => this.handlePreview(image.url, codeNumber)}
+            src={image}
+            onClick={() => this.handlePreview(image, codeNumber)}
           />
         );
       },
@@ -101,7 +100,7 @@ class ListContainers extends Component {
     {
       title: 'Vị trí - Nguồn',
       dataIndex: 'source',
-      render: source => [source.position,source.name].filter(Boolean).join(','),
+      render: source => [source.position, source.name].filter(Boolean).join(','),
     },
     {
       title: 'Hành động',
@@ -127,7 +126,7 @@ class ListContainers extends Component {
     const { data, loading } = this.props;
     const { selectedRows, previewVisible, previewImage, previewNumber, previewVideo } = this.state;
     return (
-      <PageHeaderWrapper title="Danh sách Container">
+      <PageHeaderWrapper title="Danh sách Checkin">
         <Row type="flex" justify="space-between" className={styles.header}>
           <Col md={6}>
             <Button disabled={!selectedRows.length} type="primary">

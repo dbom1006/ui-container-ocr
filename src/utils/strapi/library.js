@@ -52,7 +52,7 @@ export default class Strapi {
         Object.assign(
           {
             method,
-            url,
+            url: `/api${url}`,
           },
           requestConfig,
         ),

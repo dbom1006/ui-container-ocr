@@ -49,11 +49,11 @@ class FooterMenu extends React.Component {
             <Menu.Item key="user">
               <div>
                 <Avatar className={styles.avatar} src={currentUser.avatar} alt="avatar">
-                  {currentUser.name && currentUser.name[0]}
+                  {currentUser.username}
                 </Avatar>
               </div>
               <span title={currentUser.username}>
-                <b>{currentUser.name}</b>
+                <b>{currentUser.username}</b>
               </span>
             </Menu.Item>
             {/* <Menu.Item key={ACTION_KEY.SAFETY}>
