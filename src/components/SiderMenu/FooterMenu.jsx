@@ -4,6 +4,7 @@ import React from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import styles from './index.less';
+import { displayFullName } from '@/utils/utils';
 
 const ACTION_KEY = {
   ACOUNT_INFO: '/ACCOUNT',
@@ -42,6 +43,7 @@ class FooterMenu extends React.Component {
 
   render() {
     const { currentUser = {}, menu, siderWidth, collapsed } = this.props;
+    const { firstName, lastName } = currentUser?.employee || {};
     return (
       <div className={styles.menufooter} style={{ width: collapsed ? 80 : siderWidth }}>
         {currentUser && currentUser.username ? (
@@ -49,11 +51,11 @@ class FooterMenu extends React.Component {
             <Menu.Item key="user">
               <div>
                 <Avatar className={styles.avatar} src={currentUser.avatar} alt="avatar">
-                  {currentUser.username}
+                  {firstName}
                 </Avatar>
               </div>
-              <span title={currentUser.username}>
-                <b>{currentUser.username}</b>
+              <span>
+                <b>{displayFullName(firstName, lastName)}</b>
               </span>
             </Menu.Item>
             {/* <Menu.Item key={ACTION_KEY.SAFETY}>

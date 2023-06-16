@@ -58,24 +58,37 @@ export default [
         ],
       },
       {
-        path: '/containers',
-        name: 'containers',
-        icon: 'carry-out',
+        path: '/checkin',
+        name: 'checkin',
+        icon: 'clock-circle',
         authority: ['admin'],
         routes: [
           {
-            path: '/containers',
-            component: './containers',
+            path: '/checkin',
+            component: './checkin',
           },
           {
             name: 'detail',
-            path: '/containers/:id',
-            component: './containers/$id',
+            path: '/checkin/:id',
+            component: './checkin/$id',
             hideInMenu: true,
           },
         ],
       },
-
+      {
+        path: '/timekeeping',
+        name: 'timekeeping',
+        icon: 'carry-out',
+        authority: ['admin'],
+        component: './timekeeping',
+      },
+      {
+        path: '/setting',
+        name: 'setting',
+        icon: 'setting',
+        authority: ['admin'],
+        component: './setting',
+      },
       {
         component: '404',
         authority: ['admin'],

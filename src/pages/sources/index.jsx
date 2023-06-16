@@ -56,7 +56,7 @@ class Sources extends Component {
       type: 'sources/fetch',
       payload: {
         pagination,
-        filter,
+        filter: { ...filter, populate: '*' },
         sort: { field, order },
         search,
       },
@@ -79,25 +79,25 @@ class Sources extends Component {
     });
   };
 
-  scanSource = source => {
+  scanSource = (source, id) => {
     const { dispatch } = this.props;
     if (source.type == 'Image') {
       dispatch({
         type: 'sources/runWorker',
-        payload: source._id,
+        payload: id,
         callback: () => {
           router.push('/containers');
         },
       });
     } else {
-      router.push('/sources/' + source._id + '/containers');
+      router.push('/sources/' + id + '/containers');
     }
   };
 
   columns = [
     {
       title: 'Hình ảnh',
-      dataIndex: '',
+      dataIndex: 'attributes',
       render: ({ file, url, type }) => (
         <Avatar
           src={(file && file.url) || url}
@@ -109,7 +109,7 @@ class Sources extends Component {
     },
     {
       title: 'Tên',
-      dataIndex: 'name',
+      dataIndex: 'attributes[name]',
     },
     // {
     //   title: 'Offline',
@@ -118,15 +118,15 @@ class Sources extends Component {
     // },
     {
       title: 'Vị trí',
-      dataIndex: 'position',
+      dataIndex: 'attributes[position]',
     },
     {
       title: 'Loại',
-      dataIndex: 'type',
+      dataIndex: 'attributes[type]',
     },
     {
       title: 'Trạng thái',
-      dataIndex: 'state',
+      dataIndex: 'attributes[state]',
       render: (state = 'Pending') => {
         return <Tag color={SOURCE_STATES[state].color}>{SOURCE_STATES[state].label}</Tag>;
       },
@@ -142,7 +142,7 @@ class Sources extends Component {
       //dataIndex: 'id',
       render: source => (
         <span className={styles.actions}>
-          <Link to={`/sources/${source._id}/detail`}>
+          <Link to={`/sources/${source.id}/detail`}>
             <Tooltip title="View detail">
               <Button type="link" shape="circle" icon="eye" />
             </Tooltip>
@@ -153,7 +153,7 @@ class Sources extends Component {
               type="link"
               shape="circle"
               icon="scan"
-              onClick={() => this.scanSource(source)}
+              onClick={() => this.scanSource(source?.attributes, source?.id)}
             />
           </Tooltip>
           {/* </Link> */}
@@ -164,7 +164,6 @@ class Sources extends Component {
 
   render() {
     const { data, loading } = this.props;
-    console.log('🚀 ~ file: index.jsx:163 ~ Sources ~ render ~ data:', data);
     const { selectedRows, showPopup, typePopup, dataPopup } = this.state;
     return (
       <PageHeaderWrapper title="Media Source - Camera">

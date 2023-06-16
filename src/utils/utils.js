@@ -5,7 +5,7 @@ const isUrl = path => reg.test(path);
 
 export const isBrowser = () => typeof window !== 'undefined';
 
-export const urlToList = (url) => {
+export const urlToList = url => {
   if (!url || url === '/') {
     return ['/'];
   }
@@ -33,7 +33,7 @@ const isAntDesignProOrDev = () => {
 // export const convertFilter = x => x;
 export const convertFilter = filters =>
   Object.keys(filters)
-    .map((x) => {
+    .map(x => {
       const value = filters[x];
       if (Array.isArray(value)) return { key: x, value: value[0] };
       return { key: x, value };
@@ -54,3 +54,6 @@ export const getBase64 = file =>
     reader.onload = () => resolve(reader.result);
     reader.onerror = error => reject(error);
   });
+
+export const displayFullName = (firstName, lastName) =>
+  firstName.concat(' ', lastName || '') || lastName;
