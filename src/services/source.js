@@ -17,7 +17,7 @@ export async function createSource({ files, ...params }) {
   const form = new FormData();
   form.append('data', JSON.stringify(params));
   if (files && files[0]) form.append('files.file', files[0].originFileObj, files[0].name);
-  return strapi.request('post', `${API_URL}/sources`, {
+  return strapi.request('post', `/sources`, {
     data: form,
   });
 }

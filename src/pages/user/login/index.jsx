@@ -78,19 +78,9 @@ class Login extends Component {
     const { type, autoLogin, error } = this.state;
     return (
       <Card bordered={false}>
-        <Row gutter={12} type="flex" justify="end" className={styles.header}>
-          <Col className={styles.textHeader}>Container Detection là gì?</Col>
-          <Col md={4} className={styles.btnSignUp}>
-            <a href="https://nanonets.com/case-study/shipping-container" target="_blank">
-              <Button style={{ height: 36 }} block>
-                Xem thêm
-              </Button>
-            </a>
-          </Col>
-        </Row>
         <div className={styles.main}>
           <div className={styles.headerForm}>
-            <h1>Đăng nhập vào CONDET</h1>
+            <h1>Đăng nhập vào BVQN.FaceReg</h1>
             <p>Điền thông tin chi tiết phía dưới</p>
           </div>
           {error && this.renderMessage(error)}

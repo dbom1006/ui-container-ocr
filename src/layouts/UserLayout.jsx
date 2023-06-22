@@ -1,10 +1,11 @@
-import { DefaultFooter, getMenuData, getPageTitle } from '@ant-design/pro-layout';
-import DocumentTitle from 'react-document-title';
-import Link from 'umi/link';
-import React from 'react';
-import { connect } from 'dva';
-import { formatMessage } from 'umi-plugin-react/locale';
+import { getMenuData, getPageTitle } from '@ant-design/pro-layout';
 import { Layout } from 'antd';
+import { connect } from 'dva';
+import React from 'react';
+import DocumentTitle from 'react-document-title';
+import { formatMessage } from 'umi-plugin-react/locale';
+import Link from 'umi/link';
+import loginBanner from '../assets/login-banner.png';
 import logo from '../assets/logo.png';
 import styles from './UserLayout.less';
 
@@ -39,11 +40,11 @@ const UserLayout = (props) => {
               <Link to="/">
                 <img alt="logo" src={logo} />
               </Link>
-              <h2>Container Detection</h2>
-              <p>Automatically recognizes and decodes international shipping container codes, speeding up the security and overall throughput to process cargo tracking at sea ports</p>
+              <h2>Bệnh viện Đa khoa khu vực miền núi phía Bắc Quảng Nam</h2>
+              <p>Bệnh viện hạng I trực thuộc Sở Y tế Quảng Nam; có nhiệm vụ khám chữa bệnh cho nhân dân các huyện miền núi phía Bắc của tỉnh Quảng Nam</p>
             </div>
             <div className={styles.slide}>
-              <img src="https://images.fineartamerica.com/images-medium-large-5/1-cargo-containers-christophe-vander-eeckenreportersscience-photo-library.jpg" />
+              <img src={loginBanner} />
             </div>
           </Sider>
           <Content width="60%" className={styles.wrapper}>

@@ -43,7 +43,7 @@ class FooterMenu extends React.Component {
 
   render() {
     const { currentUser = {}, menu, siderWidth, collapsed } = this.props;
-    const { firstName, lastName } = currentUser?.employee || {};
+    const { firstName, lastName } = currentUser?.employee || {firstName: currentUser.username};
     return (
       <div className={styles.menufooter} style={{ width: collapsed ? 80 : siderWidth }}>
         {currentUser && currentUser.username ? (
