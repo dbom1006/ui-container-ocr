@@ -161,7 +161,7 @@ class ListCheckin extends Component {
         const { id: sourceId } = source?.data;
         return (
           <span className={styles.actions}>
-            <Link to={`/containers/${data?.id}`}>
+            <Link to={`/checkin/${data?.id}`}>
               <Tooltip title="View detail">
                 <Button type="link" shape="circle" icon="eye" />
               </Tooltip>

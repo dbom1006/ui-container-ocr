@@ -236,7 +236,7 @@ export default class Strapi {
    * @param id ID of entry
    */
   getEntry(contentTypePluralized, id) {
-    return this.request('get', `/${contentTypePluralized}/${id}`);
+    return this.request('get', `/${contentTypePluralized}/${id}?populate=*`);
   }
 
   /**
@@ -324,7 +324,9 @@ export default class Strapi {
    * @param requestConfig
    */
   upload(data, requestConfig) {
-    return this.request('post', '/upload', Object.assign({ data }, requestConfig));
+    const form = new FormData();
+    data.forEach(file => form.append('files', file.originFileObj, file.name))
+    return this.request('post', '/upload', Object.assign({ data: form }, requestConfig));
   }
 
   /**

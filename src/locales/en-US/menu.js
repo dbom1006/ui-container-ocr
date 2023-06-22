@@ -82,6 +82,7 @@ export default {
   'menu.checkin': 'Checkin',
   'menu.sources': 'Nguồn dữ liệu',
   'menu.timekeeping': 'Chấm công',
+  'menu.employee': 'Nhân viên',
   'menu.sources.detail': 'Chi tiết',
   'menu.sources.detail.info': 'Thông tin chung',
   'menu.sources.detail.containers': 'Danh sách Checkin',

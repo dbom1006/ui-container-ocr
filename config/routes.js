@@ -83,6 +83,13 @@ export default [
         component: './timekeeping',
       },
       {
+        path: '/employee',
+        name: 'employee',
+        icon: 'user',
+        authority: ['admin'],
+        component: './employee',
+      },
+      {
         path: '/setting',
         name: 'setting',
         icon: 'setting',

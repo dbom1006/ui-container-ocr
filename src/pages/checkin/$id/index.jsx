@@ -4,6 +4,7 @@ import { GridContent } from '@ant-design/pro-layout';
 import { connect } from 'dva';
 import styles from './style.less';
 import moment from 'moment';
+import { displayFullName } from '@/utils/utils';
 
 @connect(({ containerDetail, loading }) => ({
   container: containerDetail.current,
@@ -51,50 +52,36 @@ class DetailContainer extends Component {
 
   render() {
     const { container, loading } = this.props;
-    let { image, source, codeNumber, url } = container;
-    image = url ? { url } : image || source;
-    if (!image) image = { url: '' };
+    const { employee, image, date, time, active } = container?.data?.attributes || {};
+    const { firstName = '', lastName = '', code } = employee?.data?.attributes || {};
+    const fullName = displayFullName(firstName, lastName);
     return (
       <PageHeader
         className="site-page-header"
         onBack={() => window.history.back()}
-        title="Chi tiết Container"
+        title="Chi tiết Checkin"
       >
         <Card loading={loading} bordered={false}>
           <GridContent>
             <Row gutter={24}>
               <Col md={8} className={styles.content}>
                 <div>
-                  <h2>{container.codeNumber}</h2>
-                </div>
-                <div><i>{moment(container.updatedAt).format('HH:mm DD/MM/YYYY')}</i></div>
-                <div>
-                  <span>Xác nhận: </span> {container.isConfirmed && <Icon type="check" />}
+                  <span>
+                    Tên nhân viên: <b>{fullName}</b>
+                  </span>
                 </div>
                 <div>
-                  <span>Mã Owner:</span> {container.owner}
-                </div>
-                <div>
-                  <span>Mã Seri:</span> {container.serial}
-                </div>
-                <div>
-                  <span>Type:</span> {container.type}
-                </div>
-                <div>
-                  <span>Độ tin cậy:</span>
-                  {container.reliability}
-                </div>
-                <div>
-                  <img
-                    className={styles.image}
-                    src={image.url}
-                    onClick={() => this.handlePreview(image.url, codeNumber)}
-                  />
+                  <span>
+                    Ngày checkin:{' '}
+                    <b>
+                      {moment(time, 'HH:mm').format('HH:mm')} {moment(date).format('DD/MM/YYYY')}
+                    </b>
+                  </span>
                 </div>
               </Col>
-              <Col md={16} className={styles.preview}>
+              {/* <Col md={16} className={styles.preview}>
                 <img src={image.url.replace('/out/', '/out/full-')} />
-              </Col>
+              </Col> */}
             </Row>
           </GridContent>
         </Card>
