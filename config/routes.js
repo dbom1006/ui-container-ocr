@@ -49,9 +49,9 @@ export default [
                 component: './sources/$id/info',
               },
               {
-                name: 'containers',
-                path: '/sources/:id/containers',
-                component: './sources/$id/containers',
+                name: 'checkin',
+                path: '/sources/:id/checkin',
+                component: './sources/$id/checkin',
               },
             ],
           },

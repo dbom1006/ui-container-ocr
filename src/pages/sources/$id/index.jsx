@@ -12,8 +12,8 @@ const tabList = [
     tab: 'Thông tin',
   },
   {
-    key: 'containers',
-    tab: 'Xử lý Containers',
+    key: 'checkin',
+    tab: 'Xử lý Checkin',
   },
 ];
 
@@ -36,7 +36,7 @@ class PastStaffings extends Component {
 
     switch (key) {
       case 'detail':
-      case 'containers':
+      case 'checkin':
         router.push(`${url}/${key}`);
         break;
       default:

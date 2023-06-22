@@ -126,12 +126,12 @@ class PopupAddSource extends Component {
               <Col md={8}>
                 <FormItem label="Loại">
                   {getFieldDecorator('type', {
-                    initialValue: typeSource || 'Video',
+                    initialValue: typeSource || 'Camera',
                   })(
                     <Select placeholder="Select type of source" onChange={this.onChangeType}>
                       {/* <Select.Option value="Image">Image</Select.Option> */}
-                      <Select.Option value="Video">Video</Select.Option>
                       <Select.Option value="Camera">Camera</Select.Option>
+                      <Select.Option value="Video">Video</Select.Option>
                     </Select>,
                   )}
                 </FormItem>

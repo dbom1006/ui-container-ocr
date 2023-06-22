@@ -85,6 +85,6 @@ export default {
   'menu.employee': 'Nhân viên',
   'menu.sources.detail': 'Chi tiết',
   'menu.sources.detail.info': 'Thông tin chung',
-  'menu.sources.detail.containers': 'Danh sách Checkin',
+  'menu.sources.detail.checkin': 'Danh sách Checkin',
   'menu.containers.detail': 'Chi tiết Checkin',
 };
