@@ -252,7 +252,7 @@ class SourceContainers extends PureComponent {
             {state == 'Processing' && (source.type === 'Camera' || source.type === 'Video') && (
               <img
                 ref={el => (this.img = el)}
-                src={OCR_URL + '/video/' + source.id}
+                src={OCR_URL + '/worker/' + source.id+'/video'}
                 onError={() => {
                   this.img.src = '/icons/icon-512x512.png';
                 }}

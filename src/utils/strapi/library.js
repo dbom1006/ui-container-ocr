@@ -235,8 +235,13 @@ export default class Strapi {
    * @param contentTypePluralized Type of entry pluralized
    * @param id ID of entry
    */
-  getEntry(contentTypePluralized, id) {
-    return this.request('get', `/${contentTypePluralized}/${id}`);
+  async getEntry(contentTypePluralized, id) {
+    const res = await this.request('get', `/${contentTypePluralized}/${id}`);
+    if(res.data) return {
+      id: res.data.id,
+      ...res.data.attributes,
+    }
+    return null
   }
 
   /**
