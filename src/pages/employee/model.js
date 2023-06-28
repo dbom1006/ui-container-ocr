@@ -1,4 +1,4 @@
-import { createEmployee, getDataEmployees } from '@/services/employee';
+import { createEmployee, getDataEmployees, updateEmployee } from '@/services/employee';
 
 const EmployeesModel = {
   namespace: 'employees',
@@ -7,7 +7,7 @@ const EmployeesModel = {
       list: [],
       pagination: {},
       filter: {},
-      sort: { field: 'updatedAt', order: 'desc' },
+      sort: { field: 'createdAt', order: 'desc' },
       search: '',
     },
   },
@@ -26,6 +26,12 @@ const EmployeesModel = {
           type: 'save',
           payload: response,
         });
+        callback && callback();
+      }
+    },
+    *update({ employeeId, payload, callback }, { call }) {
+      const response = yield call(updateEmployee, employeeId, payload);
+      if (response) {
         callback && callback();
       }
     }

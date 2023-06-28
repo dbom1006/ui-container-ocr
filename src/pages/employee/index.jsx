@@ -1,4 +1,16 @@
-import { Col, Icon, Input, Row, Button, Popconfirm, Avatar, Tooltip, Tag } from 'antd';
+import {
+  Col,
+  Icon,
+  Input,
+  Row,
+  Button,
+  Popconfirm,
+  Avatar,
+  Tooltip,
+  Tag,
+  Switch,
+  message,
+} from 'antd';
 import React, { Component } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Link from 'umi/link';
@@ -50,7 +62,7 @@ class ListEmployee extends Component {
     }
   };
 
-  fetchData = (pagination, filter, { field = 'updatedAt', order = 'desc' } = {}, search) => {
+  fetchData = (pagination, filter, { field = 'createdAt', order = 'desc' } = {}, search) => {
     const { dispatch } = this.props;
     dispatch({
       type: 'employees/fetch',
@@ -76,6 +88,16 @@ class ListEmployee extends Component {
       showPopup: true,
       typePopup: 'Edit',
       dataPopup: item,
+    });
+  };
+
+  handleUpdateEmployee = (employeeId, data = {}) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employees/update',
+      employeeId,
+      payload: data,
+      callback: () => message.success('Successfully!'),
     });
   };
 
@@ -125,6 +147,20 @@ class ListEmployee extends Component {
       dataIndex: 'attributes[createdAt]',
       render: createdAt => {
         return moment(createdAt).format('DD/MM/YYYY');
+      },
+    },
+    {
+      title: 'Trạng thái',
+      dataIndex: '',
+      render: data => {
+        const { id, attributes = {} } = data || {};
+        const { status } = attributes;
+        return (
+          <Switch
+            defaultChecked={status}
+            onChange={checked => this.handleUpdateEmployee(id, { status: checked })}
+          />
+        );
       },
     },
   ];

@@ -16,6 +16,14 @@ export async function createEmployee(params) {
   });
 }
 
+export async function updateEmployee(employeeId, params) {
+  const form = new FormData();
+  form.append('data', JSON.stringify(params));
+  return strapi.request('put', `/employees/${employeeId}`, {
+    data: form,
+  });
+}
+
 export const getDataEmployees = async ({
   pagination = {},
   filter = {},
