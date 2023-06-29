@@ -16,17 +16,13 @@ export async function createSource({ files, ...params }) {
   const form = new FormData();
   form.append('data', JSON.stringify(params));
   if (files && files[0]) form.append('files.file', files[0].originFileObj, files[0].name);
-  return strapi.request('post', `sources`, {
+  return strapi.request('post', `/sources`, {
     data: form,
   });
 }
-export const runWorker = async id => strapi.request('post', `/sources/${id}/run`);
-export const stopWorker = async ({ id }) => {
-  try {
-    await fetch(`${OCR_URL}/stop/${id}`, { mode: 'no-cors' });
-  } catch (e) {}
-  return strapi.request('post', `/sources/${id}/stop`);
-};
+export const runWorker = async (id, url) =>
+  strapi.request('post', `/sources/${id}/run`, { data: { url } });
+export const stopWorker = async id => strapi.request('post', `/sources/${id}/stop`);
 
 export async function updateSource(id, params) {
   return strapi.updateEntry('sources', id, params);

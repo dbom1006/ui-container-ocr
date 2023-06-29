@@ -215,7 +215,11 @@ export default class Strapi {
    */
   getEntries(contentTypePluralized, params) {
     return this.request('get', `/${contentTypePluralized}`, {
-      params,
+      params: {
+        ...params,
+        populate: '*'
+      },
+      
     });
   }
 
@@ -235,8 +239,12 @@ export default class Strapi {
    * @param contentTypePluralized Type of entry pluralized
    * @param id ID of entry
    */
-  getEntry(contentTypePluralized, id) {
-    return this.request('get', `/${contentTypePluralized}/${id}?populate=*`);
+  async getEntry(contentTypePluralized, id) {
+    const res = await this.request('get', `/${contentTypePluralized}/${id}?populate=*`);
+    return {
+      ...res?.data?.attributes,
+      id,
+    };
   }
 
   /**
@@ -325,7 +333,7 @@ export default class Strapi {
    */
   upload(data, requestConfig) {
     const form = new FormData();
-    data.forEach(file => form.append('files', file.originFileObj, file.name))
+    data.forEach(file => form.append('files', file.originFileObj, file.name));
     return this.request('post', '/upload', Object.assign({ data: form }, requestConfig));
   }
 

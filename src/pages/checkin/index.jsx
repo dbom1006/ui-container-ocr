@@ -88,9 +88,9 @@ class ListCheckin extends Component {
     {
       title: 'Nhân viên',
       dataIndex: '',
-      render: data => {
-        const { employee } = data?.attributes;
-        const { firstName = '', lastName = '', avatar = {}, code } = employee?.data?.attributes;
+      render: record => {
+        const { employee, data } = record?.attributes;
+        const { firstName = '', lastName = '', avatar = {}, code } = employee?.data?.attributes || data;
         const avatarUrl = avatar?.data?.attributes?.url;
         const fullName = displayFullName(firstName, lastName);
 
@@ -140,10 +140,13 @@ class ListCheckin extends Component {
     {
       title: 'Vị trí - Nguồn',
       dataIndex: '',
-      render: data => {
-        const { source = {} } = data?.attributes;
-        const { name, position } = source?.data?.attributes;
-        return [position, name].filter(Boolean).join(' - ');
+      render: record => {
+        const { source = {}, data  } = record?.attributes;
+        const sourceId = source?.data?.id || data.source;
+        return "Camera - "+sourceId
+        // const { source = {} } = data?.attributes;
+        // const { name, position } = source?.data?.attributes;
+        // return [position, name].filter(Boolean).join(' - ');
       },
     },
     {
@@ -156,12 +159,12 @@ class ListCheckin extends Component {
     {
       title: 'Hành động',
       dataIndex: '',
-      render: data => {
-        const { source = {} } = data?.attributes;
-        const { id: sourceId } = source?.data;
+      render: record => {
+        const { source = {}, data  } = record?.attributes;
+        const sourceId = source?.data?.id || data.source;
         return (
           <span className={styles.actions}>
-            <Link to={`/checkin/${data?.id}`}>
+            <Link to={`/checkin/${record?.id}`}>
               <Tooltip title="View detail">
                 <Button type="link" shape="circle" icon="eye" />
               </Tooltip>

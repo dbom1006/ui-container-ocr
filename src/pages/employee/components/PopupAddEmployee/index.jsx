@@ -49,10 +49,14 @@ class PopupAddEmployee extends Component {
     if (!err) {
       const { type, dataPopup, dispatch } = this.props;
       if (type != 'Add') values.id = dataPopup.id;
-      const avatarId = await strapi.upload(values?.avatar);
-      values.avatar = avatarId;
-      const videoId = await strapi.upload(values?.video);
-      values.video = videoId;
+      if(values?.avatar.length){
+        const avatarId = await strapi.upload(values?.avatar);
+        values.avatar = avatarId;
+      }
+      if(values?.video.length){
+        const videoId = await strapi.upload(values?.video);
+        values.video = videoId;
+      }
       const imageIds = await strapi.upload(values?.images);
       values.images = imageIds;
       dispatch({
@@ -168,7 +172,28 @@ class PopupAddEmployee extends Component {
                   )}
                 </FormItem>
               </Col>
-
+              <Col md={24}>
+                <Form.Item label="Images" style={{ width: '100%' }}>
+                  {getFieldDecorator('images', {
+                    rules: [
+                      {
+                        required: true,
+                        message: 'Please upload images!',
+                      },
+                    ],
+                    valuePropName: 'fileList',
+                    getValueFromEvent: this.normFile,
+                    initialValue: [],
+                  })(
+                      <Upload name="images" multiple beforeUpload={()=>false} listType="picture-card" accept="image/*">
+                      <div>
+                          <Icon type="plus" />
+                          <div className="ant-upload-text">Upload</div>
+                        </div>
+                    </Upload>,
+                  )}
+                </Form.Item>
+              </Col>
               <Col md={12}>
                 <Form.Item label="Avatar" className={styles.upload}>
                   {getFieldDecorator('avatar', {
@@ -180,6 +205,7 @@ class PopupAddEmployee extends Component {
                       name="avatar"
                       listType="picture-card"
                       accept="image/*"
+                      beforeUpload={()=>false}
                       showUploadList={{ showPreviewIcon: false, showRemoveIcon: true }}
                     >
                       {getFieldValue('avatar')?.length == 0 && (
@@ -196,12 +222,6 @@ class PopupAddEmployee extends Component {
               <Col md={12}>
                 <Form.Item label="Video" className={styles.upload}>
                   {getFieldDecorator('video', {
-                    rules: [
-                      {
-                        required: true,
-                        message: 'Please upload video!',
-                      },
-                    ],
                     valuePropName: 'fileList',
                     getValueFromEvent: this.normFile,
                     initialValue: [],
@@ -210,6 +230,7 @@ class PopupAddEmployee extends Component {
                       name="video"
                       listType="picture-card"
                       accept="video/*"
+                      beforeUpload={()=>false}
                       showUploadList={{ showPreviewIcon: false, showRemoveIcon: true }}
                     >
                       {getFieldValue('video')?.length == 0 && (
@@ -223,27 +244,7 @@ class PopupAddEmployee extends Component {
                 </Form.Item>
               </Col>
 
-              <Col md={12}>
-                <Form.Item label="Images" style={{ width: '100%' }}>
-                  {getFieldDecorator('images', {
-                    rules: [
-                      {
-                        required: true,
-                        message: 'Please upload images!',
-                      },
-                    ],
-                    valuePropName: 'fileList',
-                    getValueFromEvent: this.normFile,
-                    initialValue: [],
-                  })(
-                    <Upload name="images" listType="picture" accept="image/*">
-                      <Button>
-                        <Icon type="upload" /> Upload
-                      </Button>
-                    </Upload>,
-                  )}
-                </Form.Item>
-              </Col>
+              
             </Row>
           </Form>
         </Modal>

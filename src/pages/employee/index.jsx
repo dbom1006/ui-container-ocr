@@ -1,4 +1,4 @@
-import { Col, Icon, Input, Row, Button, Popconfirm, Avatar, Tooltip, Tag } from 'antd';
+import { Col, Icon, Input, Row, Button, Popconfirm, Avatar, Tooltip, Tag, message } from 'antd';
 import React, { Component } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Link from 'umi/link';
@@ -10,6 +10,7 @@ import { displayFullName, round2 } from '@/utils/utils';
 import PopupAddEmployee from '@/pages/employee/components/PopupAddEmployee';
 import { router } from 'umi';
 import { API_URL, SOURCE_STATES } from '@/utils/constants';
+import { runTrainingEmployees } from '@/services/employee';
 
 @connect(({ employees, loading }) => ({
   data: employees.data,
@@ -21,6 +22,7 @@ class ListEmployee extends Component {
     showPopup: false,
     typePopup: 'Add',
     dataPopup: {},
+    syncLoading: false
   };
 
   componentDidMount() {
@@ -70,6 +72,18 @@ class ListEmployee extends Component {
       dataPopup: undefined,
     });
   };
+
+  runTraining = async () => {
+    this.setState({ syncLoading: true })
+    try{
+      const result = await runTrainingEmployees();
+      if(result.data?.success) message.success("Đồng bộ thành công!")
+      else message.success("Đồng bộ thất bại, vui lòng thử lại!")
+    }catch(e){
+      message.success("Đồng bộ thất bại, vui lòng thử lại!")
+    }
+    this.setState({ syncLoading: false })
+  }
 
   showEditPopup = item => {
     this.setState({
@@ -131,7 +145,7 @@ class ListEmployee extends Component {
 
   render() {
     const { data, loading } = this.props;
-    const { selectedRows, showPopup, typePopup, dataPopup } = this.state;
+    const { selectedRows, showPopup, typePopup, dataPopup, syncLoading } = this.state;
     return (
       <PageHeaderWrapper title="Danh sách nhân viên">
         <PopupAddEmployee
@@ -142,11 +156,15 @@ class ListEmployee extends Component {
           onClose={() => this.setState({ showPopup: false, dataPopup: null })}
         />
         <Row type="flex" justify="space-between" className={styles.header}>
-          <Col md={6}>
+          <Col md={12}>
             <Button type="primary" onClick={this.showAddPopup}>
               Thêm mới nhân viên
             </Button>
+            <Button type="primary" loading={syncLoading} ghost onClick={this.runTraining}>
+              Đồng bộ hệ thống nhận diện
+            </Button>
           </Col>
+         
           <Col md={6}>
             <Input.Search
               placeholder="Enter to search source"

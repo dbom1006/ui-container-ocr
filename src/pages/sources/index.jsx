@@ -85,12 +85,13 @@ class Sources extends Component {
       dispatch({
         type: 'sources/runWorker',
         payload: id,
+        data: source.url,
         callback: () => {
-          router.push('/containers');
+          router.push('/checkins');
         },
       });
     } else {
-      router.push('/sources/' + id + '/containers');
+      router.push('/sources/' + id + '/checkin');
     }
   };
 
@@ -153,7 +154,7 @@ class Sources extends Component {
               type="link"
               shape="circle"
               icon="scan"
-              onClick={() => this.scanSource(source?.attributes, source?.id)}
+              onClick={() => this.scanSource(source, source?.id)}
             />
           </Tooltip>
           {/* </Link> */}

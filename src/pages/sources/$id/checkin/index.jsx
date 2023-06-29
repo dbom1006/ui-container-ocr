@@ -21,7 +21,7 @@ import styles from './style.less';
 import StandardTable from '@/components/StandardTable';
 import moment from 'moment';
 import Logo from '@/assets/logo.png';
-import { OCR_URL } from '@/utils/constants';
+import { API_URL, OCR_URL } from '@/utils/constants';
 
 // const isHired = state => ['CONFIRMED', 'WORKING', 'SEND_FUND', 'SEND_FUND_FAILED'].includes(state);
 // const isCheckin = state => ['WORKING', 'SEND_FUND', 'SEND_FUND_FAILED'].includes(state);
@@ -57,12 +57,13 @@ class SourceContainers extends PureComponent {
     const { dispatch, source } = this.props;
     dispatch({
       type: 'sourceDetail/runWorker',
-      payload: source._id,
+      payload: source.id,
+      data: source.url,
       callback: () => {
         this.setState({ state: 'Processing' });
         this.intervalId = setInterval(() => {
           this.fetchData();
-        }, 2000);
+        }, 1500);
       },
     });
   };
@@ -71,7 +72,7 @@ class SourceContainers extends PureComponent {
     const { dispatch, source } = this.props;
     dispatch({
       type: 'sourceDetail/stopWorker',
-      payload: { id: source._id },
+      payload: source.id,
       callback: () => {
         this.setState({ state: 'Pending' });
         clearInterval(this.intervalId);
@@ -123,7 +124,7 @@ class SourceContainers extends PureComponent {
       type: 'sourceDetail/fetchDataContainer',
       payload: {
         pagination,
-        filter: { ...filter, source: source._id },
+        filter: { ...filter, source: source.id },
         sort: { field, order },
         search,
       },
@@ -142,29 +143,29 @@ class SourceContainers extends PureComponent {
   };
 
   columns = [
+    // {
+    //   title: 'Ảnh',
+    //   dataIndex: '',
+    //   render: (data) => {
+    //     const { image, url, source, employeeCode } = data.attributes
+    //     return (
+    //       <img
+    //         className={styles.image}
+    //         height={60}
+    //         src={API_URL+ image?.data?.attributes.url}
+    //         onClick={() => this.handlePreview(image?.data?.attributes.url, employeeCode)}
+    //       />
+    //     );
+    //   },
+    // },
     {
-      title: 'Ảnh',
-      dataIndex: '',
-      render: ({ image, url, source, codeNumber }) => {
-        image = (url ? { url } : null) || image || source;
-        return (
-          <img
-            className={styles.image}
-            height={60}
-            src={image.url}
-            onClick={() => this.handlePreview(image.url, codeNumber)}
-          />
-        );
-      },
-    },
-    {
-      title: 'Mã Container',
-      dataIndex: 'codeNumber',
+      title: 'Mã nhân viên',
+      dataIndex: 'attributes[employeeCode]',
       render: code => <b>{code}</b>,
     },
     {
       title: 'Thời gian',
-      dataIndex: 'trackingTime',
+      dataIndex: 'attributes[createdAt]',
       render: time => moment(time).format('HH:mm DD/MM/YY'),
     },
     {
@@ -183,26 +184,6 @@ class SourceContainers extends PureComponent {
         </span>
       ),
     },
-    // {
-    //   title: 'Owner',
-    //   dataIndex: 'owner',
-    // },
-    // {
-    //   title: 'Seri',
-    //   dataIndex: 'serial',
-    // },
-    // {
-    //   title: 'Type',
-    //   dataIndex: 'type',
-    // },
-    // {
-    //   title: 'Time',
-    //   dataIndex: 'updatedAt',
-    //   render: date => moment(date).format('HH:mm DD/MM/YYYY'),
-    //   sorter: true,
-    // },
-
-    // },
   ];
 
   render() {
@@ -252,9 +233,12 @@ class SourceContainers extends PureComponent {
             {state == 'Processing' && (source.type === 'Camera' || source.type === 'Video') && (
               <img
                 ref={el => (this.img = el)}
-                src={OCR_URL + '/worker/' + source.id+'/video'}
+                src={OCR_URL + '/workers/' + source.id + '/video'}
                 onError={() => {
                   this.img.src = '/icons/icon-512x512.png';
+                  setTimeout(()=>{
+                    if(this.img) this.img.src = OCR_URL + '/workers/' + source.id + '/video'
+                  }, 2000)
                 }}
               />
             )}

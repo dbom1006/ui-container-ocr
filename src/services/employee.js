@@ -16,6 +16,8 @@ export async function createEmployee(params) {
   });
 }
 
+export const runTrainingEmployees = async () => strapi.request('post', `/employees/training`);
+
 export const getDataEmployees = async ({
   pagination = {},
   filter = {},

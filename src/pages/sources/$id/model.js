@@ -35,13 +35,13 @@ const Model = {
         payload: response,
       });
     },
-    *runWorker({ payload, callback }, { call, put }) {
-      const response = yield call(runWorker, payload);
+    *runWorker({ payload, callback, data }, { call, put }) {
+      const response = yield call(runWorker, payload, data);
       if (response) {
-        yield put({
-          type: 'saveCurrent',
-          payload: response,
-        });
+        // yield put({
+        //   type: 'saveCurrent',
+        //   payload: response,
+        // });
         callback && callback();
       }
     },
