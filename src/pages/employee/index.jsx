@@ -1,16 +1,22 @@
-import { Col, Icon, Input, Row, Button, Popconfirm, Avatar, Tooltip, Tag, message } from 'antd';
-import React, { Component } from 'react';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import Link from 'umi/link';
-import { connect } from 'dva';
-import styles from './style.less';
 import StandardTable from '@/components/StandardTable';
-import moment from 'moment';
-import { displayFullName, round2 } from '@/utils/utils';
 import PopupAddEmployee from '@/pages/employee/components/PopupAddEmployee';
-import { router } from 'umi';
-import { API_URL, SOURCE_STATES } from '@/utils/constants';
 import { runTrainingEmployees } from '@/services/employee';
+import { API_URL } from '@/utils/constants';
+import { displayFullName } from '@/utils/utils';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import {
+  Avatar,
+  Button,
+  Col,
+  Input,
+  Row,
+  Switch,
+  message
+} from 'antd';
+import { connect } from 'dva';
+import moment from 'moment';
+import React, { Component } from 'react';
+import styles from './style.less';
 
 @connect(({ employees, loading }) => ({
   data: employees.data,
@@ -52,7 +58,7 @@ class ListEmployee extends Component {
     }
   };
 
-  fetchData = (pagination, filter, { field = 'updatedAt', order = 'desc' } = {}, search) => {
+  fetchData = (pagination, filter, { field = 'createdAt', order = 'desc' } = {}, search) => {
     const { dispatch } = this.props;
     dispatch({
       type: 'employees/fetch',
@@ -90,6 +96,16 @@ class ListEmployee extends Component {
       showPopup: true,
       typePopup: 'Edit',
       dataPopup: item,
+    });
+  };
+
+  handleUpdateEmployee = (employeeId, data = {}) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employees/update',
+      employeeId,
+      payload: data,
+      callback: () => message.success('Successfully!'),
     });
   };
 
@@ -139,6 +155,20 @@ class ListEmployee extends Component {
       dataIndex: 'attributes[createdAt]',
       render: createdAt => {
         return moment(createdAt).format('DD/MM/YYYY');
+      },
+    },
+    {
+      title: 'Trạng thái',
+      dataIndex: '',
+      render: data => {
+        const { id, attributes = {} } = data || {};
+        const { status } = attributes;
+        return (
+          <Switch
+            defaultChecked={status}
+            onChange={checked => this.handleUpdateEmployee(id, { status: checked })}
+          />
+        );
       },
     },
   ];
