@@ -176,12 +176,12 @@ const SourceContainers = ({ loadingButton, source, loading, data, dispatch}) => 
         <Col lg={8}>
           {state == 'Processing' && (
             <Button type="danger" loading={loadingButton} onClick={stopWorker}>
-              Dừng Worker
+              Tạm dừng máy check in 
             </Button>
           )}
           {state != 'Processing' && (
             <Button type="primary" loading={loadingButton} onClick={startWorker}>
-              Bắt đầu Worker
+              Bắt đầu máy checkin
             </Button>
           )}
           <Button type="primary" disabled={!selectedRows.length}>

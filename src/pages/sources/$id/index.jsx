@@ -57,7 +57,7 @@ class PastStaffings extends Component {
   render() {
     const { children, loading } = this.props;
     return (
-      <PageHeaderWrapper title="Chi tiết nguồn dữ liệu - Camera">
+      <PageHeaderWrapper title="Chi tiết máy checkin">
         <Card
           className={styles.tabsCard}
           bordered={false}

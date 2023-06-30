@@ -90,8 +90,9 @@ class ListCheckin extends Component {
       dataIndex: '',
       render: record => {
         const { employee, data } = record?.attributes;
-        const { firstName = '', lastName = '', avatar = {}, code } = employee?.data?.attributes || data;
-        const avatarUrl = avatar?.data?.attributes?.url;
+        const { firstName = '', lastName = '', avatar = {}, code } =
+          employee?.data?.attributes || data;
+        const avatarUrl = API_URL + avatar?.data?.attributes?.url;
         const fullName = displayFullName(firstName, lastName);
 
         return (
@@ -138,19 +139,19 @@ class ListCheckin extends Component {
       // sorter: true,
     },
     {
-      title: 'Vị trí - Nguồn',
+      title: 'Máy checkin',
       dataIndex: '',
       render: record => {
-        const { source = {}, data  } = record?.attributes;
+        const { source = {}, data } = record?.attributes;
         const sourceId = source?.data?.id || data.source;
-        return "Camera - "+sourceId
+        return 'Camera - ' + sourceId;
         // const { source = {} } = data?.attributes;
         // const { name, position } = source?.data?.attributes;
         // return [position, name].filter(Boolean).join(' - ');
       },
     },
     {
-      title: 'Active',
+      title: 'Trạng thái',
       render: data => {
         const { active } = data?.attributes;
         return <Switch defaultChecked={active} />;
@@ -159,22 +160,16 @@ class ListCheckin extends Component {
     {
       title: 'Hành động',
       dataIndex: '',
+      align: 'center',
       render: record => {
-        const { source = {}, data  } = record?.attributes;
+        const { source = {}, data } = record?.attributes;
         const sourceId = source?.data?.id || data.source;
         return (
-          <span className={styles.actions}>
-            <Link to={`/checkin/${record?.id}`}>
-              <Tooltip title="View detail">
-                <Button type="link" shape="circle" icon="eye" />
-              </Tooltip>
-            </Link>
-            <Link to={`/sources/${sourceId}/detail`}>
-              <Tooltip title="View source">
-                <Button type="link" shape="circle" icon="link" />
-              </Tooltip>
-            </Link>
-          </span>
+          <Link to={`/sources/${sourceId}/detail`}>
+            <Tooltip title="Xem máy checkin">
+              <Button type="link" shape="circle" icon="link" />
+            </Tooltip>
+          </Link>
         );
       },
     },
