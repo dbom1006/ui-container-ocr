@@ -1,125 +1,106 @@
-import {
-  Avatar,
-  Card,
-  Col,
-  Icon,
-  Input,
-  Row,
-  Button,
-  Table,
-  Tooltip,
-  message,
-  Modal,
-  Alert,
-} from 'antd';
-import React, { PureComponent } from 'react';
-import { GridContent, PageHeaderWrapper } from '@ant-design/pro-layout';
-import Link from 'umi/link';
-import { connect } from 'dva';
-import upperFirst from 'lodash/upperFirst';
-import styles from './style.less';
 import StandardTable from '@/components/StandardTable';
-import moment from 'moment';
-import Logo from '@/assets/logo.png';
 import { API_URL, OCR_URL } from '@/utils/constants';
+import { GridContent } from '@ant-design/pro-layout';
+import {
+  Button,
+  Col,
+  Input,
+  Modal,
+  Row,
+  Tooltip
+} from 'antd';
+import { connect } from 'dva';
+import moment from 'moment';
+import React, { useEffect, useRef, useState } from 'react';
+import styles from './style.less';
 
-// const isHired = state => ['CONFIRMED', 'WORKING', 'SEND_FUND', 'SEND_FUND_FAILED'].includes(state);
-// const isCheckin = state => ['WORKING', 'SEND_FUND', 'SEND_FUND_FAILED'].includes(state);
+const SourceContainers = ({ loadingButton, source, loading, data, dispatch}) => {
+  const [loaded, setLoaded] = useState(false);
+  const [state, setState] = useState(source.state);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [preview, setPreview] = useState({
+    visible: false,
+    video: false,
+    image: null,
+    number: '',
+  });
 
-@connect(({ sourceDetail, loading }) => ({
-  source: sourceDetail.current,
-  data: sourceDetail.dataContainer,
-  loading: loading.effects['sourceDetail/fetchDataContainer'],
-  loadingButton:
-    loading.effects['sourceDetail/runWorker'] || loading.effects['sourceDetail/stopWorker'],
-}))
-class SourceContainers extends PureComponent {
-  intervalId = null;
+  const intervalId = useRef(null);
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      loaded: false,
-      state: props.source.state,
-      selectedRows: [],
-      previewVisible: false,
-      previewImage: null,
-      previewVideo: false,
-      previewNumber: '',
-    };
-  }
+  useEffect(()=>{
+    if(state == 'Processing') 
+      intervalId.current = setInterval(() => {
+        fetchData();
+      }, 500);
+    return ()=>{
+      clearInterval(intervalId.current)
+    }
+  },[state])
 
-  componentDidMount() {
-    this.fetchData();
-  }
+  useEffect(() => {
+    fetchData();
+    return ()=>{
+      clearInterval(intervalId.current)
+    }
+  }, []);
 
-  startWorker = () => {
-    const { dispatch, source } = this.props;
+  const startWorker = () => {
     dispatch({
       type: 'sourceDetail/runWorker',
       payload: source.id,
       data: source.url,
       callback: () => {
-        this.setState({ state: 'Processing' });
-        this.intervalId = setInterval(() => {
-          this.fetchData();
-        }, 1500);
+        setState('Processing');
       },
     });
   };
 
-  stopWorker = () => {
-    const { dispatch, source } = this.props;
+  const stopWorker = () => {
     dispatch({
       type: 'sourceDetail/stopWorker',
       payload: source.id,
       callback: () => {
-        this.setState({ state: 'Pending' });
-        clearInterval(this.intervalId);
+        setState('Pending');
       },
     });
   };
 
-  deleteContainer = id => {
-    const { dispatch } = this.props;
+  const deleteContainer = (id) => {
     dispatch({
       type: 'sourceDetail/deleteContainer',
       payload: id,
       callback: () => {
-        this.fetchData();
+        fetchData();
       },
     });
   };
 
-  componentWillUnmount() {
-    clearInterval(this.intervalId);
-  }
-
-  handleSelectRows = selectedRows => {
-    this.setState({ selectedRows });
+  const handleSelectRows = (rows) => {
+    setSelectedRows(rows);
   };
 
-  handleTableChange = (pagination, filter, sort) => {
-    const { dispatch } = this.props;
-    const { data } = this.props;
-    this.fetchData(pagination, filter, sort, data.search);
+  const handleTableChange = (pagination, filter, sort) => {
+    fetchData(pagination, filter, sort, data.search);
   };
 
-  handleSearch = search => {
-    const { data } = this.props;
+  const handleSearch = (search) => {
     const { pagination, filter, sort } = data;
-    this.fetchData(pagination, filter, sort, search);
+    fetchData(pagination, filter, sort, search);
   };
 
-  handleSearchChange = e => {
-    const { pagination, filter, sort, search } = this.props.data;
+  const handleSearchChange = (e) => {
+    const { pagination, filter, sort, search } = data;
     if (!e.target.value && search) {
-      this.fetchData(pagination, filter, sort, '');
+      fetchData(pagination, filter, sort, '');
     }
   };
 
-  fetchData = async (pagination, filter, { field = 'updatedAt', order = 'desc' } = {}, search) => {
-    const { dispatch, source } = this.props;
+  const fetchData = async (
+    pagination,
+    filter,
+    { field = 'updatedAt', order = 'desc' } = {},
+    search
+  ) => {
     await dispatch({
       type: 'sourceDetail/fetchDataContainer',
       payload: {
@@ -129,56 +110,59 @@ class SourceContainers extends PureComponent {
         search,
       },
     });
-    this.setState({ loaded: true });
+    setLoaded(true);
   };
-  handleCancel = () => this.setState({ previewVisible: false });
 
-  handlePreview = async (url, codeNumber, isVideo) => {
-    this.setState({
-      previewImage: url,
-      previewVideo: isVideo,
-      previewNumber: codeNumber,
-      previewVisible: true,
+  const handleCancel = () => {
+    setPreview((prevPreview) => ({ ...prevPreview, visible: false }));
+  };
+
+  const handlePreview = async (url, codeNumber, isVideo) => {
+    setPreview({
+      visible: true,
+      video: isVideo,
+      image: url,
+      number: codeNumber,
     });
   };
 
-  columns = [
-    // {
-    //   title: 'Ảnh',
-    //   dataIndex: '',
-    //   render: (data) => {
-    //     const { image, url, source, employeeCode } = data.attributes
-    //     return (
-    //       <img
-    //         className={styles.image}
-    //         height={60}
-    //         src={API_URL+ image?.data?.attributes.url}
-    //         onClick={() => this.handlePreview(image?.data?.attributes.url, employeeCode)}
-    //       />
-    //     );
-    //   },
-    // },
+  const columns = [
+    {
+      title: 'Ảnh',
+      dataIndex: '',
+      render: (data) => {
+        const { image, url, source, employeeCode } = data.attributes;
+        return (
+          <img
+            className={styles.image}
+            height={48}
+            src={API_URL + image?.data?.attributes.url}
+            onClick={() => handlePreview(API_URL + image?.data?.attributes.url, employeeCode)}
+          />
+        );
+      },
+    },
     {
       title: 'Mã nhân viên',
       dataIndex: 'attributes[employeeCode]',
-      render: code => <b>{code}</b>,
+      render: (code) => <b>{code}</b>,
     },
     {
       title: 'Thời gian',
       dataIndex: 'attributes[createdAt]',
-      render: time => moment(time).format('HH:mm DD/MM/YY'),
+      render: (time) => moment(time).format('HH:mm DD/MM/YY'),
     },
     {
       title: '',
       dataIndex: '',
-      render: container => (
+      render: (container) => (
         <span className={styles.actions}>
           <Tooltip title="Delete">
             <Button
               type="link"
               shape="circle"
               icon="delete"
-              onClick={() => this.deleteContainer(container.id)}
+              onClick={() => deleteContainer(container.id)}
             />
           </Tooltip>
         </span>
@@ -186,102 +170,92 @@ class SourceContainers extends PureComponent {
     },
   ];
 
-  render() {
-    const { data, loading, loadingButton, source } = this.props;
-    const {
-      state,
-      loaded,
-      selectedRows,
-      previewVisible,
-      previewImage,
-      previewNumber,
-      previewVideo,
-    } = this.state;
-    return (
-      <GridContent>
-        <Row type="flex" gutter={16} justify="space-between" className={styles.header}>
-          <Col lg={8}>
-            {state == 'Processing' && (
-              <Button type="danger" loading={loadingButton} onClick={this.stopWorker}>
-                Dừng Worker
-              </Button>
-            )}
-            {state != 'Processing' && (
-              <Button type="primary" loading={loadingButton} onClick={this.startWorker}>
-                Bắt đầu Worker
-              </Button>
-            )}
-            <Button type="primary" disabled={!selectedRows.length}>
-              Xuất ra file CSV
+  return (
+    <GridContent>
+      <Row type="flex" gutter={16} justify="space-between" className={styles.header}>
+        <Col lg={8}>
+          {state == 'Processing' && (
+            <Button type="danger" loading={loadingButton} onClick={stopWorker}>
+              Dừng Worker
             </Button>
-          </Col>
-          <Col lg={6}>
-            <Input.Search
-              placeholder="Enter to search source"
-              enterButton
-              allowClear
-              onChange={this.handleSearchChange}
-              onSearch={this.handleSearch}
-            />
-          </Col>
-        </Row>
-        <Row gutter={24} className={styles.content}>
-          <Col lg={12} className={styles.preview}>
-            {source.type === 'Image' && (
-              <img src={(source.file && source.file.url) || source.url} />
-            )}
-            {state == 'Processing' && (source.type === 'Camera' || source.type === 'Video') && (
-              <img
-                ref={el => (this.img = el)}
-                src={OCR_URL + '/workers/' + source.id + '/video'}
-                onError={() => {
-                  this.img.src = '/icons/icon-512x512.png';
-                  setTimeout(()=>{
-                    if(this.img) this.img.src = OCR_URL + '/workers/' + source.id + '/video'
-                  }, 2000)
-                }}
-              />
-            )}
-            {state != 'Processing' && source.type === 'Camera' && <img src={source.url} />}
-            {state != 'Processing' && source.type === 'Video' && (
-              <video controls>
-                <source
-                  src={(source.file && source.file.url) || source.url}
-                  type={source.file && source.file.mime}
-                ></source>
-              </video>
-            )}
-          </Col>
-          <Col lg={12}>
-            <StandardTable
-              rowKey="id"
-              loading={!loaded}
-              data={data}
-              columns={this.columns}
-              onChange={this.handleTableChange}
-              scroll={{ x: 'fit-content' }}
-            />
-          </Col>
-        </Row>
-        <Modal
-          width={680}
-          visible={previewVisible}
-          destroyOnClose
-          footer={null}
-          onCancel={this.handleCancel}
-        >
-          <h2>{previewNumber}</h2>
-          {previewVideo ? (
-            <video style={{ width: '100%' }} controls>
-              <source src={previewImage}></source>
-            </video>
-          ) : (
-            <img alt="preview" style={{ width: '100%' }} src={previewImage} />
           )}
-        </Modal>
-      </GridContent>
-    );
-  }
-}
+          {state != 'Processing' && (
+            <Button type="primary" loading={loadingButton} onClick={startWorker}>
+              Bắt đầu Worker
+            </Button>
+          )}
+          <Button type="primary" disabled={!selectedRows.length}>
+            Xuất ra file CSV
+          </Button>
+        </Col>
+        <Col lg={6}>
+          <Input.Search
+            placeholder="Tìm kiếm thông tin Checkin"
+            enterButton
+            allowClear
+            onChange={handleSearchChange}
+            onSearch={handleSearch}
+          />
+        </Col>
+      </Row>
+      <Row gutter={24} className={styles.content}>
+        <Col lg={12} className={styles.preview}>
+          {source.type === 'Image' && (
+            <img src={(source.file && source.file.url) || source.url} />
+          )}
+          {state == 'Processing' && (source.type === 'Camera' || source.type === 'Video') && (
+            <img
+              style={{backgroundImage: '/icons/icon-512x512.png'}}
+              src={OCR_URL + '/workers/' + source.id + '/video'}
+            />
+          )}
+          {state != 'Processing' && source.type === 'Camera' && <img src={source.url} />}
+          {state != 'Processing' && source.type === 'Video' && (
+            <video controls>
+              <source
+                src={(source.file && source.file.url) || source.url}
+                type={source.file && source.file.mime}
+              ></source>
+            </video>
+          )}
+        </Col>
+        <Col lg={12}>
+          <StandardTable
+            rowKey="id"
+            loading={!loaded}
+            data={data}
+            size="small"
+            columns={columns}
+            bordered={false}
+            onChange={handleTableChange}
+            scroll={{ x: 'fit-content' }}
+          />
+        </Col>
+      </Row>
+      <Modal
+        width={480}
+        visible={preview.visible}
+        destroyOnClose
+        footer={null}
+        onCancel={handleCancel}
+      >
+        <h2>{preview.number}</h2>
+        {preview.video ? (
+          <video style={{ width: '100%' }} controls>
+            <source src={preview.image}></source>
+          </video>
+        ) : (
+          <img alt="preview" style={{ width: '100%' }} src={preview.image} />
+        )}
+      </Modal>
+    </GridContent>
+  );
+};
 
-export default SourceContainers;
+export default connect(({ sourceDetail, loading }) => ({
+  source: sourceDetail.current,
+  data: sourceDetail.dataContainer,
+  loading: loading.effects['sourceDetail/fetchDataContainer'],
+  loadingButton:
+    loading.effects['sourceDetail/runWorker'] || loading.effects['sourceDetail/stopWorker'],
+}))(SourceContainers)

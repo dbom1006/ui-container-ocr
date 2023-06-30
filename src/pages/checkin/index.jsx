@@ -193,7 +193,7 @@ class ListCheckin extends Component {
           </Col>
           <Col md={6}>
             <Input.Search
-              placeholder="Enter to search source"
+              placeholder="Tìm kiếm thông tin checkin"
               enterButton
               allowClear
               onChange={this.handleSearchChange}

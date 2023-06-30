@@ -80,7 +80,7 @@ export default {
   'menu.booking': 'Booking',
   'menu.updateBooking': 'Update Booking',
   'menu.checkin': 'Checkin',
-  'menu.sources': 'Nguồn dữ liệu',
+  'menu.sources': 'Quản lý máy Checkin',
   'menu.timekeeping': 'Chấm công',
   'menu.employee': 'Nhân viên',
   'menu.sources.detail': 'Chi tiết',

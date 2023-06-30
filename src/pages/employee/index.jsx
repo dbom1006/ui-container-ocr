@@ -162,11 +162,11 @@ class ListEmployee extends Component {
       dataIndex: '',
       render: data => {
         const { id, attributes = {} } = data || {};
-        const { status } = attributes;
+        const { active } = attributes;
         return (
           <Switch
-            defaultChecked={status}
-            onChange={checked => this.handleUpdateEmployee(id, { status: checked })}
+            defaultChecked={active}
+            onChange={checked => this.handleUpdateEmployee(id, { active: checked })}
           />
         );
       },
@@ -197,7 +197,7 @@ class ListEmployee extends Component {
          
           <Col md={6}>
             <Input.Search
-              placeholder="Enter to search source"
+              placeholder="Tìm kiếm thông tin nhân viên"
               enterButton
               allowClear
               onChange={this.handleSearchChange}
