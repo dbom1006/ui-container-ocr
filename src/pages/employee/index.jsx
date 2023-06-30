@@ -4,15 +4,7 @@ import { runTrainingEmployees } from '@/services/employee';
 import { API_URL } from '@/utils/constants';
 import { displayFullName } from '@/utils/utils';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import {
-  Avatar,
-  Button,
-  Col,
-  Input,
-  Row,
-  Switch,
-  message
-} from 'antd';
+import { Avatar, Button, Col, Input, Row, Switch, message } from 'antd';
 import { connect } from 'dva';
 import moment from 'moment';
 import React, { Component } from 'react';
@@ -28,7 +20,7 @@ class ListEmployee extends Component {
     showPopup: false,
     typePopup: 'Add',
     dataPopup: {},
-    syncLoading: false
+    syncLoading: false,
   };
 
   componentDidMount() {
@@ -80,16 +72,16 @@ class ListEmployee extends Component {
   };
 
   runTraining = async () => {
-    this.setState({ syncLoading: true })
-    try{
+    this.setState({ syncLoading: true });
+    try {
       const result = await runTrainingEmployees();
-      if(result.data?.success) message.success("Đồng bộ thành công!")
-      else message.success("Đồng bộ thất bại, vui lòng thử lại!")
-    }catch(e){
-      message.success("Đồng bộ thất bại, vui lòng thử lại!")
+      if (result.data?.success) message.success('Đồng bộ thành công!');
+      else message.success('Đồng bộ thất bại, vui lòng thử lại!');
+    } catch (e) {
+      message.success('Đồng bộ thất bại, vui lòng thử lại!');
     }
-    this.setState({ syncLoading: false })
-  }
+    this.setState({ syncLoading: false });
+  };
 
   showEditPopup = item => {
     this.setState({
@@ -115,7 +107,7 @@ class ListEmployee extends Component {
       dataIndex: 'attributes[code]',
     },
     {
-      title: 'Avatar',
+      title: 'Ảnh đại diện',
       dataIndex: '',
       render: data => {
         const { firstName = '', avatar = {} } = data?.attributes;
@@ -136,7 +128,7 @@ class ListEmployee extends Component {
       },
     },
     {
-      title: 'Team',
+      title: 'Khoa',
       dataIndex: 'attributes[team]',
     },
     {
@@ -162,11 +154,11 @@ class ListEmployee extends Component {
       dataIndex: '',
       render: data => {
         const { id, attributes = {} } = data || {};
-        const { status } = attributes;
+        const { active } = attributes;
         return (
           <Switch
-            defaultChecked={status}
-            onChange={checked => this.handleUpdateEmployee(id, { status: checked })}
+            defaultChecked={active}
+            onChange={checked => this.handleUpdateEmployee(id, { active: checked })}
           />
         );
       },
@@ -194,15 +186,9 @@ class ListEmployee extends Component {
               Đồng bộ hệ thống nhận diện
             </Button>
           </Col>
-         
+
           <Col md={6}>
-            <Input.Search
-              placeholder="Enter to search source"
-              enterButton
-              allowClear
-              onChange={this.handleSearchChange}
-              onSearch={this.handleSearch}
-            />
+            <Input.Search placeholder="Tìm kiếm..." enterButton allowClear />
           </Col>
         </Row>
         <StandardTable

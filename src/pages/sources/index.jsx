@@ -167,7 +167,7 @@ class Sources extends Component {
     const { data, loading } = this.props;
     const { selectedRows, showPopup, typePopup, dataPopup } = this.state;
     return (
-      <PageHeaderWrapper title="Media Source - Camera">
+      <PageHeaderWrapper title="Danh sách máy checkin">
         <PopupAddSource
           show={showPopup}
           type={typePopup}
@@ -178,17 +178,11 @@ class Sources extends Component {
         <Row type="flex" justify="space-between" className={styles.header}>
           <Col md={6}>
             <Button type="primary" onClick={this.showAddPopup}>
-              Thêm mới nguồn dữ liệu
+              Thêm máy
             </Button>
           </Col>
           <Col md={6}>
-            <Input.Search
-              placeholder="Enter to search source"
-              enterButton
-              allowClear
-              onChange={this.handleSearchChange}
-              onSearch={this.handleSearch}
-            />
+            <Input.Search placeholder="Tìm kiếm..." enterButton allowClear />
           </Col>
         </Row>
         <StandardTable

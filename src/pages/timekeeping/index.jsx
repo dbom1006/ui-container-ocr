@@ -22,9 +22,9 @@ import moment from 'moment';
 import { displayFullName, round2 } from '@/utils/utils';
 import { API_URL } from '@/utils/constants';
 
-@connect(({ containers, user, loading }) => ({
-  data: containers.data,
-  loading: loading.effects['containers/fetch'],
+@connect(({ timekeepings, user, loading }) => ({
+  data: timekeepings.data,
+  loading: loading.effects['timekeepings/fetch'],
 }))
 class ListTimekeeping extends Component {
   state = {
@@ -62,15 +62,12 @@ class ListTimekeeping extends Component {
     }
   };
 
-  fetchData = (pagination, filter, { field = 'updatedAt', order = 'desc' } = {}, search) => {
+  fetchData = (date = moment().format('DD-MM-YYYY')) => {
     const { dispatch, customer } = this.props;
     dispatch({
-      type: 'containers/fetch',
+      type: 'timekeepings/fetch',
       payload: {
-        pagination,
-        filter: { ...filter, populate: '*' },
-        sort: { field, order },
-        search,
+        date,
       },
     });
   };
@@ -92,11 +89,10 @@ class ListTimekeeping extends Component {
   columns = [
     {
       title: 'Nhân viên',
-      dataIndex: '',
-      render: data => {
-        const { employee } = data?.attributes;
-        const { firstName = '', lastName = '', avatar = {}, code } = employee?.data?.attributes;
-        const avatarUrl = avatar?.data?.attributes?.url;
+      dataIndex: 'employee',
+      render: employee => {
+        const { firstName = '', lastName = '', avatar = {}, code } = employee;
+        const avatarUrl = API_URL + avatar?.url;
         const fullName = displayFullName(firstName, lastName);
 
         return (
@@ -113,79 +109,60 @@ class ListTimekeeping extends Component {
       },
     },
     {
-      title: 'Hình ảnh',
-      dataIndex: '',
-      render: data => {
-        const { image } = data?.attributes;
+      title: 'Khoa',
+      dataIndex: 'employee[team]',
+    },
+    {
+      title: 'Thời gian nhận diện',
+      dataIndex: 'checkin',
+      render: checkin => {
+        if (!checkin) return '-';
+
+        const { date, time } = checkin;
+        return <b>{moment(time, 'HH:mm').format('HH:mm')}</b>;
+      },
+    },
+    {
+      title: 'Ảnh checkin',
+      dataIndex: 'checkin',
+      render: checkin => {
+        if (!checkin) return '-';
+
+        const { image } = checkin;
+        const imageUrl = API_URL + image?.url;
         return (
           <img
             className={styles.image}
             height={60}
-            src={API_URL + image?.data?.attributes?.url}
+            src={imageUrl}
             // onClick={() => this.handlePreview(image?.data?.attribute?.url, codeNumber)}
           />
         );
       },
     },
-    {
-      title: 'Thời gian nhận diện',
-      dataIndex: '',
-      render: data => {
-        const { date, time } = data?.attributes;
-        return (
-          <>
-            <b>{moment(time, 'HH:mm').format('HH:mm')}</b>{' '}
-            <span>{moment(date).format('DD/MM/YYYY')}</span>
-          </>
-        );
-      },
-      // sorter: true,
-    },
-    {
-      title: 'Vị trí - Nguồn',
-      dataIndex: '',
-      render: data => {
-        const { source = {} } = data?.attributes;
-        const { name, position } = source?.data?.attributes;
-        return [position, name].filter(Boolean).join(' - ');
-      },
-    },
-    {
-      title: 'Active',
-      render: data => {
-        const { active } = data?.attributes;
-        return <Switch defaultChecked={active} />;
-      },
-    },
-    {
-      title: 'Hành động',
-      dataIndex: '',
-      render: data => {
-        const { source = {} } = data?.attributes;
-        const { id: sourceId } = source?.data;
-        return (
-          <span className={styles.actions}>
-            <Link to={`/containers/${data?.id}`}>
-              <Tooltip title="View detail">
-                <Button type="link" shape="circle" icon="eye" />
-              </Tooltip>
-            </Link>
-            <Link to={`/sources/${sourceId}/detail`}>
-              <Tooltip title="View source">
-                <Button type="link" shape="circle" icon="link" />
-              </Tooltip>
-            </Link>
-          </span>
-        );
-      },
-    },
+    // {
+    //   title: 'Vị trí - Nguồn',
+    //   dataIndex: '',
+    //   render: data => {
+    //     const { source = {} } = data?.attributes;
+    //     const { name, position } = source?.data?.attributes;
+    //     return [position, name].filter(Boolean).join(' - ');
+    //   },
+    // },
+    // {
+    //   title: 'Active',
+    //   render: data => {
+    //     const { active } = data?.attributes;
+    //     return <Switch defaultChecked={active} />;
+    //   },
+    // },
   ];
 
   render() {
     const { data, loading } = this.props;
     const { selectedRows, previewVisible, previewImage, previewNumber, previewVideo } = this.state;
     return (
-      <PageHeaderWrapper title="Chấm công">
+      <PageHeaderWrapper title="Danh sách chấm công">
         <Row type="flex" justify="space-between" className={styles.header}>
           <Button disabled={!selectedRows.length} type="primary">
             Xuất ra file CSV
@@ -194,6 +171,9 @@ class ListTimekeeping extends Component {
             defaultValue={moment()}
             format="DD-MM-YYYY"
             disabledDate={this.disabledDate}
+            onChange={date => this.fetchData(moment(date).format('DD-MM-YYYY'))}
+            allowClear={false}
+            size="large"
           />
         </Row>
         <StandardTable

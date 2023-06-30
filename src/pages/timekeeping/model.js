@@ -1,19 +1,16 @@
-import { getDataContainers } from '@/services/container';
+import { getDataTimekeepings } from '@/services/timekeeping';
 
 const Model = {
-  namespace: 'containers',
+  namespace: 'timekeepings',
   state: {
     data: {
       list: [],
-      pagination: {},
-      filter: {},
-      sort: { field: 'updatedAt', order: 'desc' },
       search: '',
     },
   },
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(getDataContainers, payload);
+      const response = yield call(getDataTimekeepings, payload);
       yield put({
         type: 'save',
         payload: response,

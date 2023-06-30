@@ -27,10 +27,9 @@ const FormItem = Form.Item;
   submitting: loading.effects['sources/add'],
 }))
 class PopupAddSource extends Component {
-
   state = {
-    typeOfSource: "Video"
-  }
+    typeOfSource: 'Video',
+  };
 
   openNotificationWithIcon = type => {
     notification[type]({
@@ -41,7 +40,7 @@ class PopupAddSource extends Component {
 
   onChangeType = type => {
     this.setState({ typeOfSource: type });
-  }
+  };
 
   handleSubmit = e => {
     e.preventDefault();
@@ -55,7 +54,7 @@ class PopupAddSource extends Component {
     if (!err) {
       const { type, dataPopup, dispatch } = this.props;
       if (type != 'Add') values.id = dataPopup.id;
-      values.state="Pending"
+      values.state = 'Pending';
       dispatch({
         type: type == 'Add' ? 'sources/add' : 'sources/update',
         payload: values,
@@ -95,14 +94,16 @@ class PopupAddSource extends Component {
       visible,
       submitting,
     } = this.props;
-    const { name = '', isOffline = true, type: typeSource, url,position, tag, file } = dataPopup || {};
+    const { name = '', isOffline = true, type: typeSource, url, position, tag, file } =
+      dataPopup || {};
     const files = getFieldValue('files') || [];
     return (
       <GridContent>
         <Modal
           visible={show}
-          title={type + ' Source'}
-          okText="Submit"
+          title={'Thêm máy checkin'}
+          okText="Thêm"
+          cancelText="Huỷ"
           width={680}
           onCancel={this.closePopup}
           onOk={this.handleSubmit}
@@ -144,9 +145,8 @@ class PopupAddSource extends Component {
                     valuePropName: 'checked',
                   })(<Switch />)}
                 </FormItem>
-              </Col>              
-              {
-                typeOfSource !== "Camera" &&
+              </Col>
+              {typeOfSource !== 'Camera' && (
                 <Col md={10}>
                   <Form.Item
                     label="Upload file"
@@ -174,9 +174,8 @@ class PopupAddSource extends Component {
                     )}
                   </Form.Item>
                 </Col>
-              }
-              {
-                typeOfSource !== "Image" &&
+              )}
+              {typeOfSource !== 'Image' && (
                 <Col md={14}>
                   <FormItem label="URL Nguồn/Camera">
                     {getFieldDecorator('url', {
@@ -194,7 +193,7 @@ class PopupAddSource extends Component {
                     })(<Input placeholder="" />)}
                   </FormItem>
                 </Col>
-              }         
+              )}
               <Col md={14}>
                 <FormItem label="Vị trí">
                   {getFieldDecorator('position', {
@@ -211,7 +210,7 @@ class PopupAddSource extends Component {
                     initialValue: position,
                   })(<Input placeholder="" />)}
                 </FormItem>
-              </Col>     
+              </Col>
               <Col md={24}>
                 <FormItem label="Ghi chú thêm">
                   {getFieldDecorator('tag', {

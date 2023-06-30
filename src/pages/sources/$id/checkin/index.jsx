@@ -217,7 +217,7 @@ class SourceContainers extends PureComponent {
           </Col>
           <Col lg={6}>
             <Input.Search
-              placeholder="Enter to search source"
+              placeholder="Tìm kiếm..."
               enterButton
               allowClear
               onChange={this.handleSearchChange}
@@ -236,9 +236,9 @@ class SourceContainers extends PureComponent {
                 src={OCR_URL + '/workers/' + source.id + '/video'}
                 onError={() => {
                   this.img.src = '/icons/icon-512x512.png';
-                  setTimeout(()=>{
-                    if(this.img) this.img.src = OCR_URL + '/workers/' + source.id + '/video'
-                  }, 2000)
+                  setTimeout(() => {
+                    if (this.img) this.img.src = OCR_URL + '/workers/' + source.id + '/video';
+                  }, 2000);
                 }}
               />
             )}
