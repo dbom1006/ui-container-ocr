@@ -28,6 +28,13 @@ export default [
         authority: ['admin'],
       },
       {
+        path: '/dashboard',
+        name: 'dashboard',
+        icon: 'dashboard',
+        authority: ['admin'],
+        component: './dashboard',
+      },
+      {
         path: '/sources',
         name: 'sources',
         icon: 'video-camera',
@@ -88,6 +95,20 @@ export default [
         icon: 'user',
         authority: ['admin'],
         component: './employee',
+      },
+      {
+        path: '/schedule-working',
+        name: 'schedule-working',
+        icon: 'calendar',
+        authority: ['admin'],
+        component: './scheduleWorking',
+      },
+      {
+        path: '/report',
+        name: 'report',
+        icon: 'report',
+        authority: ['admin'],
+        component: './report',
       },
       {
         path: '/setting',

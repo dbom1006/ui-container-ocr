@@ -97,7 +97,7 @@ class ListEmployee extends Component {
       type: 'employees/update',
       employeeId,
       payload: data,
-      callback: () => message.success('Successfully!'),
+      callback: () => message.success('Cập nhật thành công!'),
     });
   };
 
@@ -136,7 +136,7 @@ class ListEmployee extends Component {
       dataIndex: 'attributes[images][data]',
       render: images => (
         <div className={styles.listImages}>
-          {images?.map(x => (
+          {images?.slice(0,4).map(x => (
             <img key={x?.attributes?.id} src={API_URL + x?.attributes?.url} />
           ))}
         </div>

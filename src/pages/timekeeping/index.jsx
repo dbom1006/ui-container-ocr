@@ -62,12 +62,12 @@ class ListTimekeeping extends Component {
     }
   };
 
-  fetchData = (date = moment().format('DD-MM-YYYY')) => {
+  fetchData = (date = moment()) => {
     const { dispatch, customer } = this.props;
     dispatch({
       type: 'timekeepings/fetch',
       payload: {
-        date,
+        date: moment(date).format('YYYY-MM-DD'),
       },
     });
   };
@@ -171,7 +171,7 @@ class ListTimekeeping extends Component {
             defaultValue={moment()}
             format="DD-MM-YYYY"
             disabledDate={this.disabledDate}
-            onChange={date => this.fetchData(moment(date).format('DD-MM-YYYY'))}
+            onChange={date => this.fetchData(date)}
             allowClear={false}
             size="large"
           />

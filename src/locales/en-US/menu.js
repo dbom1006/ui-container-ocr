@@ -5,10 +5,6 @@ export default {
   'menu.login': 'Login',
   'menu.register': 'Register',
   'menu.register.result': 'Register Result',
-  'menu.dashboard': 'Dashboard',
-  'menu.dashboard.analysis': 'Analysis',
-  'menu.dashboard.monitor': 'Monitor',
-  'menu.dashboard.workplace': 'Workplace',
   'menu.exception.403': '403',
   'menu.exception.404': '404',
   'menu.exception.500': '500',
@@ -87,4 +83,6 @@ export default {
   'menu.sources.detail.info': 'Thông tin chung',
   'menu.sources.detail.checkin': 'Danh sách Checkin',
   'menu.containers.detail': 'Chi tiết Checkin',
+  'menu.schedule-working': 'Lịch làm việc',
+  'menu.dashboard': 'Tổng quan',
 };
