@@ -106,7 +106,7 @@ export default [
       {
         path: '/report',
         name: 'report',
-        icon: 'report',
+        icon: 'solution',
         authority: ['admin'],
         component: './report',
       },

@@ -85,4 +85,5 @@ export default {
   'menu.containers.detail': 'Chi tiết Checkin',
   'menu.schedule-working': 'Lịch làm việc',
   'menu.dashboard': 'Tổng quan',
+  'menu.report': 'Báo cáo',
 };
