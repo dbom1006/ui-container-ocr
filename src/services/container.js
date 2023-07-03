@@ -5,7 +5,14 @@ import { GET_PARAMS } from '@/utils/constants';
 import { convertFilter } from '@/utils/utils';
 
 export async function getContainers(params) {
-  return strapi.getEntries('checkins', params);
+  return strapi.getEntries('checkins', {...params,
+  populate:{
+    source: true,
+    image: true,
+    employee:{
+      populate:['avatar']
+    }
+  }});
 }
 
 export async function getContainersCount(params) {

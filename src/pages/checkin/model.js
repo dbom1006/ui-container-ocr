@@ -1,7 +1,7 @@
 import { getDataContainers } from '@/services/container';
 
 const Model = {
-  namespace: 'containers',
+  namespace: 'checkins',
   state: {
     data: {
       list: [],

@@ -24,7 +24,17 @@ import styles from './style.less';
 
 const FormItem = Form.Item;
 
-const OPTION_TEAM = ['Accountant', 'Developer', 'Designer', 'Tester', 'BA', 'Internship', 'Other'];
+const OPTION_TEAM = [
+  'Phòng Điều dưỡng',
+  'Phòng Tài Chính',
+  'Phòng Nhân Sự',
+  'Ban giám đốc',
+  'Khoa Sản',
+  'Khoa Mắt',
+  'Khoa Tai - Mũi - Họng',
+  'Khoa Ngoại',
+  'Khoa Nội',
+];
 
 @connect(({ loading }) => ({
   submitting: loading.effects['employees/add'],
@@ -49,11 +59,11 @@ class PopupAddEmployee extends Component {
     if (!err) {
       const { type, dataPopup, dispatch } = this.props;
       if (type != 'Add') values.id = dataPopup.id;
-      if(values?.avatar.length){
+      if (values?.avatar.length) {
         const avatarId = await strapi.upload(values?.avatar);
         values.avatar = avatarId;
       }
-      if(values?.video.length){
+      if (values?.video.length) {
         const videoId = await strapi.upload(values?.video);
         values.video = videoId;
       }
@@ -96,7 +106,7 @@ class PopupAddEmployee extends Component {
       visible,
       submitting,
     } = this.props;
-    const { firstName = '', lastName = '', code = 'tnm-', team = '', avatar, file } =
+    const { firstName = '', lastName = '', code = 'BVQN-', team = '', avatar, file } =
       dataPopup || {};
     const files = getFieldValue('files') || [];
     return (
@@ -185,11 +195,17 @@ class PopupAddEmployee extends Component {
                     getValueFromEvent: this.normFile,
                     initialValue: [],
                   })(
-                      <Upload name="images" multiple beforeUpload={()=>false} listType="picture-card" accept="image/*">
+                    <Upload
+                      name="images"
+                      multiple
+                      beforeUpload={() => false}
+                      listType="picture-card"
+                      accept="image/*"
+                    >
                       <div>
-                          <Icon type="plus" />
-                          <div className="ant-upload-text">Upload</div>
-                        </div>
+                        <Icon type="plus" />
+                        <div className="ant-upload-text">Upload</div>
+                      </div>
                     </Upload>,
                   )}
                 </Form.Item>
@@ -205,7 +221,7 @@ class PopupAddEmployee extends Component {
                       name="avatar"
                       listType="picture-card"
                       accept="image/*"
-                      beforeUpload={()=>false}
+                      beforeUpload={() => false}
                       showUploadList={{ showPreviewIcon: false, showRemoveIcon: true }}
                     >
                       {getFieldValue('avatar')?.length == 0 && (
@@ -230,7 +246,7 @@ class PopupAddEmployee extends Component {
                       name="video"
                       listType="picture-card"
                       accept="video/*"
-                      beforeUpload={()=>false}
+                      beforeUpload={() => false}
                       showUploadList={{ showPreviewIcon: false, showRemoveIcon: true }}
                     >
                       {getFieldValue('video')?.length == 0 && (
@@ -243,8 +259,6 @@ class PopupAddEmployee extends Component {
                   )}
                 </Form.Item>
               </Col>
-
-              
             </Row>
           </Form>
         </Modal>

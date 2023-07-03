@@ -21,9 +21,9 @@ import moment from 'moment';
 import { displayFullName, round2 } from '@/utils/utils';
 import { API_URL } from '@/utils/constants';
 
-@connect(({ containers, user, loading }) => ({
-  data: containers.data,
-  loading: loading.effects['containers/fetch'],
+@connect(({ checkins, user, loading }) => ({
+  data: checkins.data,
+  loading: loading.effects['checkins/fetch'],
 }))
 class ListCheckin extends Component {
   state = {
@@ -64,7 +64,7 @@ class ListCheckin extends Component {
   fetchData = (pagination, filter, { field = 'updatedAt', order = 'desc' } = {}, search) => {
     const { dispatch, customer } = this.props;
     dispatch({
-      type: 'containers/fetch',
+      type: 'checkins/fetch',
       payload: {
         pagination,
         filter: { ...filter, populate: '*' },
@@ -144,10 +144,8 @@ class ListCheckin extends Component {
       render: record => {
         const { source = {}, data } = record?.attributes;
         const sourceId = source?.data?.id || data.source;
-        return 'Camera - ' + sourceId;
-        // const { source = {} } = data?.attributes;
-        // const { name, position } = source?.data?.attributes;
-        // return [position, name].filter(Boolean).join(' - ');
+        const { name, position } = source?.data?.attributes;
+        return [position, name].filter(Boolean).map(x=><div>{x}</div>);
       },
     },
     {
@@ -206,7 +204,7 @@ class ListCheckin extends Component {
           onChange={this.handleTableChange}
         />
         <Modal
-          width={680}
+          width={480}
           visible={previewVisible}
           destroyOnClose
           footer={null}

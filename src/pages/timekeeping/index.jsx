@@ -11,6 +11,7 @@ import {
   Modal,
   Switch,
   DatePicker,
+  Tag,
 } from 'antd';
 import React, { Component } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -109,8 +110,16 @@ class ListTimekeeping extends Component {
       },
     },
     {
-      title: 'Khoa',
+      title: 'Phòng/Ban',
       dataIndex: 'employee[team]',
+    },
+    {
+      title: 'Trạng thái',
+      dataIndex: 'checkin',
+      render: checkin => {
+        if (!checkin) return <Tag color='red' >Chưa chấm công</Tag>;
+        return <Tag color='green' >Đã chấm công</Tag>;
+      },
     },
     {
       title: 'Thời gian nhận diện',
@@ -167,14 +176,17 @@ class ListTimekeeping extends Component {
           <Button disabled={!selectedRows.length} type="primary">
             Xuất ra file CSV
           </Button>
-          <DatePicker
-            defaultValue={moment()}
-            format="DD-MM-YYYY"
-            disabledDate={this.disabledDate}
-            onChange={date => this.fetchData(date)}
-            allowClear={false}
-            size="large"
-          />
+          <div>
+            <span>Ngày chấm công: </span>
+            <DatePicker
+              defaultValue={moment()}
+              format="DD-MM-YYYY"
+              disabledDate={this.disabledDate}
+              onChange={date => this.fetchData(date)}
+              allowClear={false}
+              size="large"
+            />
+          </div>
         </Row>
         <StandardTable
           rowKey="id"

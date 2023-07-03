@@ -216,8 +216,8 @@ export default class Strapi {
   getEntries(contentTypePluralized, params) {
     return this.request('get', `/${contentTypePluralized}`, {
       params: {
+        populate: '*',
         ...params,
-        populate: '*'
       },
       
     });

@@ -128,7 +128,7 @@ class ListEmployee extends Component {
       },
     },
     {
-      title: 'Khoa',
+      title: 'Phòng/Ban',
       dataIndex: 'attributes[team]',
     },
     {
