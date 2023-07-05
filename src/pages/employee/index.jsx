@@ -136,7 +136,7 @@ class ListEmployee extends Component {
       dataIndex: 'attributes[images][data]',
       render: images => (
         <div className={styles.listImages}>
-          {images?.slice(0,4).map(x => (
+          {images?.slice(0, 4).map(x => (
             <img key={x?.attributes?.id} src={API_URL + x?.attributes?.url} />
           ))}
         </div>

@@ -1,28 +1,22 @@
-import { getDataContainers } from '@/services/container';
+import { getDataBoxes } from '@/services/dashboard';
 
 const Model = {
-  namespace: 'containers',
+  namespace: 'dashboard',
   state: {
-    data: {
-      list: [],
-      pagination: {},
-      filter: {},
-      sort: { field: 'updatedAt', order: 'desc' },
-      search: '',
-    },
+    boxes: {},
   },
   effects: {
-    *fetch({ payload }, { call, put }) {
-      const response = yield call(getDataContainers, payload);
+    *fetchBoxes({ payload }, { call, put }) {
+      const response = yield call(getDataBoxes, payload);
       yield put({
-        type: 'save',
+        type: 'saveBoxes',
         payload: response,
       });
     },
   },
   reducers: {
-    save(state, action) {
-      return { ...state, data: action.payload };
+    saveBoxes(state, action) {
+      return { ...state, boxes: action.payload };
     },
   },
 };

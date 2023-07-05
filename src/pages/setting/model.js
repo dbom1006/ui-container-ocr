@@ -1,28 +1,28 @@
-import { getDataContainers } from '@/services/container';
+import { getSystemConfig, updateSystemConfig } from '@/services/system';
 
 const Model = {
-  namespace: 'containers',
+  namespace: 'system',
   state: {
-    data: {
-      list: [],
-      pagination: {},
-      filter: {},
-      sort: { field: 'updatedAt', order: 'desc' },
-      search: '',
-    },
+    checkinTime: ''
   },
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(getDataContainers, payload);
+      const response = yield call(getSystemConfig, payload);
       yield put({
         type: 'save',
-        payload: response,
+        payload: response.data.attributes,
       });
     },
+    *update({ payload, callback }, { call }) {
+      const response = yield call(updateSystemConfig, payload);
+      if (response) {
+        callback && callback();
+      }
+    }
   },
   reducers: {
     save(state, action) {
-      return { ...state, data: action.payload };
+      return { ...state, ...action.payload };
     },
   },
 };
