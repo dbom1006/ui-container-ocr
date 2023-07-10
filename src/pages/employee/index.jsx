@@ -83,11 +83,11 @@ class ListEmployee extends Component {
     this.setState({ syncLoading: false });
   };
 
-  showEditPopup = item => {
+  showEditPopup = (employeeId, item) => {
     this.setState({
       showPopup: true,
       typePopup: 'Edit',
-      dataPopup: item,
+      dataPopup: { ...item, employeeId },
     });
   };
 
@@ -133,6 +133,7 @@ class ListEmployee extends Component {
     },
     {
       title: 'Ảnh nhận diện',
+      width: 200,
       dataIndex: 'attributes[images][data]',
       render: images => (
         <div className={styles.listImages}>
@@ -151,6 +152,7 @@ class ListEmployee extends Component {
     },
     {
       title: 'Trạng thái',
+      width: 90,
       dataIndex: '',
       render: data => {
         const { id, attributes = {} } = data || {};
@@ -160,6 +162,18 @@ class ListEmployee extends Component {
             defaultChecked={active}
             onChange={checked => this.handleUpdateEmployee(id, { active: checked })}
           />
+        );
+      },
+    },
+    {
+      title: 'Hành động',
+      dataIndex: '',
+      align: 'center',
+      render: data => {
+        const { id, attributes = {} } = data || {};
+        const { active } = attributes;
+        return (
+          <Button type="link" icon="edit" onClick={() => this.showEditPopup(id, attributes)} />
         );
       },
     },
@@ -175,7 +189,7 @@ class ListEmployee extends Component {
           type={typePopup}
           dataPopup={dataPopup}
           refreshList={this.fetchData}
-          onClose={() => this.setState({ showPopup: false, dataPopup: null })}
+          onClose={() => this.setState({ showPopup: false, dataPopup: {} })}
         />
         <Row type="flex" justify="space-between" className={styles.header}>
           <Col md={12}>
