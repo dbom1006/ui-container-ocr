@@ -40,11 +40,11 @@ const UserLayout = (props) => {
               <Link to="/">
                 <img alt="logo" src={logo} />
               </Link>
-              <h2>Bệnh viện Đa khoa khu vực miền núi phía Bắc Quảng Nam</h2>
-              <p>Bệnh viện hạng I trực thuộc Sở Y tế Quảng Nam; có nhiệm vụ khám chữa bệnh cho nhân dân các huyện miền núi phía Bắc của tỉnh Quảng Nam</p>
+              <h2>Container Detection</h2>
+              <p>Automatically recognizes and decodes international shipping container codes, speeding up the security and overall throughput to process cargo tracking at sea ports</p>
             </div>
             <div className={styles.slide}>
-              <img src={loginBanner} />
+              <img src="https://images.fineartamerica.com/images-medium-large-5/1-cargo-containers-christophe-vander-eeckenreportersscience-photo-library.jpg" alt='' />
             </div>
           </Sider>
           <Content width="60%" className={styles.wrapper}>

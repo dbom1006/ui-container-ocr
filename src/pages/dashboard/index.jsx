@@ -8,91 +8,90 @@ import moment from 'moment';
 import { Column } from '@ant-design/plots';
 
 const MAPPING_COUNT_BOX = [
-  { key: 'employee', label: 'Nhân viên', icon: 'team' },
-  { key: 'checked', label: 'Đã checkin', icon: 'check-square' },
-  { key: 'late', label: 'Đi muộn', icon: 'clock-circle' },
-  { key: 'notChecked', label: 'Chưa checkin', icon: 'api' },
+  { key: 'total', label: 'Tất cả', icon: 'video-camera' },
+  { key: 'success', label: 'Thành công', icon: 'check-square' },
+  { key: 'failed', label: 'Thất bại', icon: 'api' },
 ];
 
 const MOCK_DATA_CHART = [
   {
     date: '20/06',
-    type: 'late',
+    type: 'success',
     value: 38,
   },
   {
     date: '20/06',
-    type: 'notChecked',
+    type: 'failed',
     value: 6,
   },
   {
     date: '21/06',
-    type: 'late',
+    type: 'success',
     value: 24,
   },
   {
     date: '21/06',
-    type: 'notChecked',
+    type: 'failed',
     value: 10,
   },
   {
     date: '22/06',
-    type: 'late',
+    type: 'success',
     value: 50,
   },
   {
     date: '22/06',
-    type: 'notChecked',
+    type: 'failed',
     value: 10,
   },
   {
     date: '23/06',
-    type: 'late',
+    type: 'success',
     value: 5,
   },
   {
     date: '23/06',
-    type: 'notChecked',
+    type: 'failed',
     value: 8,
   },
   {
     date: '24/06',
-    type: 'late',
+    type: 'success',
     value: 38,
   },
   {
     date: '24/06',
-    type: 'notChecked',
+    type: 'failed',
     value: 6,
   },
   {
     date: '25/06',
-    type: 'late',
+    type: 'success',
     value: 16,
   },
   {
     date: '25/06',
-    type: 'notChecked',
+    type: 'failed',
     value: 8,
   },
   {
     date: '26/06',
-    type: 'late',
+    type: 'success',
     value: 38,
   },
   {
     date: '26/06',
-    type: 'notChecked',
+    type: 'failed',
     value: 6,
   },
 ];
 
 const renderLabel = type => {
   switch (type) {
-    case 'late':
-      return 'Đi muộn';
-    case 'notChecked':
-      return 'Không checkin';
+    case 'success':
+      return 'Thành công';
+    case 'failed':
+      return 'Thất bại';
     default:
       return null;
   }
@@ -182,7 +181,7 @@ class Setting extends Component {
 
         <Row gutter={24}>
           {MAPPING_COUNT_BOX.map(x => (
-            <Col xs={24} sm={24} md={12} lg={6} key={x}>
+            <Col xs={24} sm={24} md={12} lg={8} key={x.key}>
               <Card loading={loadingBoxes} className={styles.box} hoverable>
                 <Row justify="space-between" align="middle" type="flex">
                   <div>
@@ -197,8 +196,8 @@ class Setting extends Component {
         </Row>
 
         <Card className={styles.checkinChart}>
-          <h2>Checkin</h2>
-          <p>Tổng lượt đi muộn và không checkin trong 7 ngày</p>
+          <h2>Nhận diện Container</h2>
+          <p>Tổng lượt nhận diện thành công và thất bại trong 7 ngày</p>
           <Column {...config} />
         </Card>
       </PageHeaderWrapper>

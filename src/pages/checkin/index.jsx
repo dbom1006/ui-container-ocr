@@ -10,6 +10,7 @@ import {
   Tooltip,
   Modal,
   Switch,
+  Tag,
 } from 'antd';
 import React, { Component } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -86,29 +87,6 @@ class ListCheckin extends Component {
 
   columns = [
     {
-      title: 'Nhân viên',
-      dataIndex: '',
-      render: record => {
-        const { employee, data } = record?.attributes;
-        const { firstName = '', lastName = '', avatar = {}, code } =
-          employee?.data?.attributes || data;
-        const avatarUrl = API_URL + avatar?.data?.attributes?.url;
-        const fullName = displayFullName(firstName, lastName);
-
-        return (
-          <Row type="flex" align="middle" className={styles.staffInfo}>
-            <Avatar size={40} className={styles.avatar} src={avatarUrl} alt="avatar">
-              {fullName}
-            </Avatar>
-            <div className={styles.right}>
-              <h4>{fullName}</h4>
-              <p>{code}</p>
-            </div>
-          </Row>
-        );
-      },
-    },
-    {
       title: 'Hình ảnh',
       dataIndex: '',
       render: data => {
@@ -125,8 +103,14 @@ class ListCheckin extends Component {
       },
     },
     {
+      title: 'Mã Container',
+      dataIndex: '',
+      render: data => <b>{data?.attributes?.code || '-'}</b>,
+    },
+    {
       title: 'Thời gian nhận diện',
       dataIndex: '',
+      width: 200,
       render: data => {
         const { date, time } = data?.attributes;
         return (
@@ -139,20 +123,20 @@ class ListCheckin extends Component {
       // sorter: true,
     },
     {
-      title: 'Máy checkin',
+      title: 'Camera',
       dataIndex: '',
       render: record => {
         const { source = {}, data } = record?.attributes;
-        const sourceId = source?.data?.id || data.source;
-        const { name, position } = source?.data?.attributes;
-        return [position, name].filter(Boolean).map(x=><div>{x}</div>);
+        const sourceId = source?.data?.id || data?.source;
+        const { name, position } = source?.data?.attributes || {};
+        return [position, name].filter(Boolean).map(x => <div>{x}</div>);
       },
     },
     {
       title: 'Trạng thái',
       render: data => {
-        const { active } = data?.attributes;
-        return <Switch defaultChecked={active} />;
+        const { status } = data?.attributes;
+        return <Tag color={status == 'Thành công' ? '#52c41a' : '#f5222d'}>{status}</Tag>;
       },
     },
     {
@@ -161,10 +145,10 @@ class ListCheckin extends Component {
       align: 'center',
       render: record => {
         const { source = {}, data } = record?.attributes;
-        const sourceId = source?.data?.id || data.source;
+        const sourceId = source?.data?.id || data?.source;
         return (
           <Link to={`/sources/${sourceId}/detail`}>
-            <Tooltip title="Xem máy checkin">
+            <Tooltip title="Xem camera">
               <Button type="link" shape="circle" icon="link" />
             </Tooltip>
           </Link>
@@ -177,7 +161,7 @@ class ListCheckin extends Component {
     const { data, loading } = this.props;
     const { selectedRows, previewVisible, previewImage, previewNumber, previewVideo } = this.state;
     return (
-      <PageHeaderWrapper title="Danh sách Checkin">
+      <PageHeaderWrapper title="Danh sách nhận diện Container">
         <Row type="flex" justify="space-between" className={styles.header}>
           <Col md={6}>
             <Button disabled={!selectedRows.length} type="primary">

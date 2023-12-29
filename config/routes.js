@@ -67,7 +67,7 @@ export default [
       {
         path: '/checkin',
         name: 'checkin',
-        icon: 'clock-circle',
+        icon: 'unordered-list',
         authority: ['admin'],
         routes: [
           {
@@ -81,34 +81,6 @@ export default [
             hideInMenu: true,
           },
         ],
-      },
-      {
-        path: '/timekeeping',
-        name: 'timekeeping',
-        icon: 'carry-out',
-        authority: ['admin'],
-        component: './timekeeping',
-      },
-      {
-        path: '/employee',
-        name: 'employee',
-        icon: 'user',
-        authority: ['admin'],
-        component: './employee',
-      },
-      {
-        path: '/schedule-working',
-        name: 'schedule-working',
-        icon: 'calendar',
-        authority: ['admin'],
-        component: './scheduleWorking',
-      },
-      {
-        path: '/report',
-        name: 'report',
-        icon: 'solution',
-        authority: ['admin'],
-        component: './report',
       },
       {
         path: '/setting',

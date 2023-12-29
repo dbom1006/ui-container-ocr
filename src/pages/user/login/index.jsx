@@ -80,7 +80,7 @@ class Login extends Component {
       <Card bordered={false}>
         <div className={styles.main}>
           <div className={styles.headerForm}>
-            <h1>Đăng nhập vào BVQN.FaceReg</h1>
+            <h1>Đăng nhập</h1>
             <p>Điền thông tin chi tiết phía dưới</p>
           </div>
           {error && this.renderMessage(error)}

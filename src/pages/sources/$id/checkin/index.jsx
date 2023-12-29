@@ -143,8 +143,8 @@ const SourceContainers = ({ loadingButton, source, loading, data, dispatch}) => 
       },
     },
     {
-      title: 'Mã nhân viên',
-      dataIndex: 'attributes[employeeCode]',
+      title: 'Mã Container',
+      dataIndex: 'attributes[code]',
       render: (code) => <b>{code}</b>,
     },
     {
@@ -176,12 +176,12 @@ const SourceContainers = ({ loadingButton, source, loading, data, dispatch}) => 
         <Col lg={8}>
           {state == 'Processing' && (
             <Button type="danger" loading={loadingButton} onClick={stopWorker}>
-              Tạm dừng máy check in 
+              Tạm dừng Camera
             </Button>
           )}
           {state != 'Processing' && (
             <Button type="primary" loading={loadingButton} onClick={startWorker}>
-              Bắt đầu máy checkin
+              Kết nối Camera
             </Button>
           )}
           <Button type="primary" disabled={!selectedRows.length}>
@@ -190,7 +190,7 @@ const SourceContainers = ({ loadingButton, source, loading, data, dispatch}) => 
         </Col>
         <Col lg={6}>
           <Input.Search
-            placeholder="Tìm kiếm thông tin Checkin"
+            placeholder="Tìm kiếm thông tin Camera"
             enterButton
             allowClear
             onChange={handleSearchChange}

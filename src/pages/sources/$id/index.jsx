@@ -13,7 +13,7 @@ const tabList = [
   },
   {
     key: 'checkin',
-    tab: 'Xử lý Checkin',
+    tab: 'Xử lý nhận diện',
   },
 ];
 
@@ -57,7 +57,7 @@ class PastStaffings extends Component {
   render() {
     const { children, loading } = this.props;
     return (
-      <PageHeaderWrapper title="Chi tiết máy checkin">
+      <PageHeaderWrapper title="Chi tiết Camera">
         <Card
           className={styles.tabsCard}
           bordered={false}

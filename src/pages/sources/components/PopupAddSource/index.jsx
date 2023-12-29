@@ -101,7 +101,7 @@ class PopupAddSource extends Component {
       <GridContent>
         <Modal
           visible={show}
-          title={'Thêm máy checkin'}
+          title={'Thêm Camera'}
           okText="Thêm"
           cancelText="Huỷ"
           width={680}

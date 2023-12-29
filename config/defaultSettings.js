@@ -10,7 +10,7 @@ export default {
   menu: {
     locale: true,
   },
-  title: 'BVQN.FaceReg',
+  title: 'CONDET',
   pwa: false,
   iconfontUrl: '//at.alicdn.com/t/font_1409694_p22epngkcn.js',
 };
